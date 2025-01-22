@@ -91,8 +91,8 @@ document.addEventListener('DOMContentLoaded', function() {
     // Function to check if user is authenticated
     function checkAuthentication() {
         const isAuthenticated = localStorage.getItem('authenticated');
-        if (!isAuthenticated) {
-            window.location.href = 'login.html';
+        if (!isAuthenticated && !window.location.href.includes('login.html') && !window.location.href.includes('signup.html')) {
+            window.location.href = 'pages/login.html';
         }
     }
 
