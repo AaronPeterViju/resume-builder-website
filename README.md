@@ -1,0 +1,1 @@
+The Resume Generator and ATS Checker is an advanced tool designed to streamline the process of creating professional resumes while ensuring they are optimized for Applicant Tracking Systems (ATS). This project simplifies the resume-building experience by leveraging user-provided inputs such as personal details, educational qualifications, and work experience.
