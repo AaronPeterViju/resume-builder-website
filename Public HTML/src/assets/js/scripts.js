@@ -91,8 +91,11 @@ document.addEventListener('DOMContentLoaded', function() {
     // Function to check if user is authenticated
     function checkAuthentication() {
         const isAuthenticated = localStorage.getItem('authenticated');
-        if (!isAuthenticated && !window.location.href.includes('login.html') && !window.location.href.includes('signup.html') && !window.location.href.includes('home.html')) {
-            window.location.href = 'pages/login.html';
+        const publicPages = ['home.html', 'login.html', 'signup.html'];
+        const currentPage = window.location.pathname.split('/').pop();
+
+        if (!isAuthenticated && !publicPages.includes(currentPage)) {
+            window.location.href = 'login.html';
         }
     }
 
