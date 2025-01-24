@@ -87,17 +87,23 @@ document.addEventListener('DOMContentLoaded', function() {
             window.location.href = 'login.html';
         }
     }
+    function saveUser(username, email, password) {
+        const users = JSON.parse(localStorage.getItem('users')) || [];
+        users.push({ username, email, password });
+        localStorage.setItem('users', JSON.stringify(users));
+    }
 
     // Function to check if user is authenticated
     function checkAuthentication() {
-        const isAuthenticated = localStorage.getItem('authenticated');
-        const publicPages = ['home.html', 'login.html', 'signup.html'];
-        const currentPage = window.location.pathname.split('/').pop();
+    const isAuthenticated = localStorage.getItem('authenticated') === 'true';
+    const publicPages = ['home.html', 'login.html', 'signup.html'];
+    const currentPage = window.location.pathname.split('/').pop();
 
-        if (!isAuthenticated && !publicPages.includes(currentPage)) {
-            window.location.href = 'login.html';
-        }
+    if (!isAuthenticated && !publicPages.includes(currentPage)) {
+        console.warn('Unauthenticated access attempt detected. Redirecting to login...');
+        window.location.href = 'login.html';
     }
+}
 
     // Check authentication on page load
     checkAuthentication();
