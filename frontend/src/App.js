@@ -1,0 +1,28 @@
+import React from 'react';
+import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
+import Home from './components/Home';
+import Login from './components/Login';
+import Signup from './components/Signup';
+import ATSChecker from './components/ATSChecker';
+import ResumeBuilder from './components/ResumeBuilder';
+import Index from './components/Index'; // Ensure this matches the file name
+import './styles.css';
+
+function App() {
+  return (
+    <Router>
+      <div className="App">
+        <Routes>
+          <Route path="/" element={<Home />} />
+          <Route path="/login" element={<Login />} />
+          <Route path="/signup" element={<Signup />} />
+          <Route path="/ats-checker" element={<ATSChecker />} />
+          <Route path="/resume-builder" element={<ResumeBuilder />} />
+          <Route path="/index" element={<Index />} /> {/* Add this line */}
+        </Routes>
+      </div>
+    </Router>
+  );
+}
+
+export default App;
