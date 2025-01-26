@@ -1,0 +1,184 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Your Name - Resume</title>
+    <style>
+        body {
+            font-family: 'Times New Roman', Times, serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f4f4f4;
+        }
+        .container {
+            width: 100%;
+            max-width: 900px;
+            margin: 20px auto;
+            background-color: white;
+            padding: 20px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+        .header {
+            text-align: center;
+        }
+        .header h1 {
+            margin: 0;
+            font-size: 36px;
+            color: rgb(45, 3, 255);
+        }
+        .header h2 {
+            font-size: 18px;
+            color: gray;
+        }
+        .section-title {
+            color: rgb(25, 76, 35);
+            font-size: 24px;
+            margin-top: 20px;
+            border-bottom: 2px solid rgb(25, 76, 35);
+            padding-bottom: 5px;
+        }
+        .contact-info, .education, .experience, .events, .skills, .languages, .interests {
+            margin-top: 20px;
+        }
+        .contact-info a, .contact-info span {
+            display: block;
+            font-size: 14px;
+            color: black;
+            margin-bottom: 10px;
+        }
+        .contact-info a:hover {
+            color: #051543;
+        }
+        .experience-item, .education-item, .event-item, .skill-item, .language-item, .interest-item {
+            margin-bottom: 15px;
+        }
+        .experience-item h3, .education-item h3, .event-item h3 {
+            font-size: 16px;
+            color: #333;
+        }
+        .experience-item p, .education-item p, .event-item p, .skill-item p, .language-item p, .interest-item p {
+            font-size: 14px;
+            color: #555;
+        }
+        .experience-item ul, .education-item ul, .event-item ul, .skill-item ul, .language-item ul, .interest-item ul {
+            margin-top: 5px;
+            list-style: none;
+            padding-left: 20px;
+        }
+        .experience-item li, .education-item li, .event-item li, .skill-item li, .language-item li, .interest-item li {
+            font-size: 14px;
+            color: #555;
+        }
+        .two-column {
+            display: flex;
+            justify-content: space-between;
+        }
+        .left-column, .right-column {
+            width: 48%;
+        }
+        .box {
+            background-color: #f1f1f1;
+            padding: 15px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            border-radius: 5px;
+        }
+        .box p {
+            font-size: 14px;
+            color: #555;
+        }
+        .box h3 {
+            font-size: 16px;
+            color: #333;
+        }
+        .linkedin, .github, .phone, .email {
+            font-size: 14px;
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <!-- HEADER -->
+    <div class="header">
+        <h1>Name</h1>
+        <h2>Title</h2>
+    </div>
+
+    <!-- TWO COLUMNS -->
+    <div class="two-column">
+        <div class="left-column">
+            <!-- EXPERIENCE SECTION -->
+            <div class="section-title">EXPERIENCE</div>
+            <div class="experience-item">
+                <h3>Job Role,Company,</h3>
+                <p>MM YYYY - MM YYYY</p>
+                <ul>
+                    <li>task1</li>
+                    <li>task2</li>
+                </ul>
+            </div>
+            <div class="experience-item">
+                <h3>Job Role,Company</h3>
+                <p>MM YYYY - MM YYYY</p>
+                <ul>
+                    <li>task2</li>
+                    <li>task1</li>
+                </ul>
+            </div>
+            <div class="experience-item">
+                <h3>Job Role,Company</h3>
+                <p>MM YYYY - MM YYYY</p>
+                <ul>
+                    <li>tasf</li>
+                    <li>sdf</li>
+                    <li>asdf</li>
+                </ul>
+            </div>       
+        </div>
+
+        <!-- RIGHT COLUMN -->
+        <div class="right-column">
+            <!-- CONTACT INFO -->
+            <div class="box">
+                <div class="section-title">CONTACT INFO</div>
+                <p class="linkedin">LinkedIn: <a href="https://www.linkedin.com/in/abhinavspramod/">Your LinkedIn Profile</a></p>
+                <p class="github">GitHub: <a href="https://github.com/abhinavpramod">Your GitHub Profile</a></p>
+                <p class="phone">Phone: +91 1234567890</p>
+                <p class="email">Email: <a href="mailto:youremail@example.com">youremail@example.com</a></p>
+            </div>
+
+            <!-- EDUCATION SECTION -->
+            <div class="box">
+                <div class="section-title">EDUCATION</div>
+                <p><strong>qualification</strong><br>University-place<br>start - end</p>
+            </div>
+
+            <!-- SKILLS & SECTION -->
+            <div class="box">
+                <div class="section-title">SKILLS & TOOLS</div>
+                <ul>
+                    <li>SKIL 1L</li>
+                    <li>SKILL 2</li>
+                    <li>SKILL 3</li>
+                </ul>
+            </div>
+
+            <!-- PROJECT SECTION -->
+            <div class="box">
+                <div class="section-title"><h>project</h></div>
+                <ul>
+                   <li> <b>project 1</b>
+                            <p>enter details of project</p></li>
+
+                    <li><b>project 2</b>
+                            <p>enter project details</p></li>
+                </ul>
+            </div>
+        </div>
+    </div>
+
+</div>
+
+</body>
+</html>
