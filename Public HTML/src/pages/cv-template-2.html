@@ -6,42 +6,50 @@
     <title>Resume Template</title>
     <style>
         body {
-            font-family: Arial, sans-serif;
+            font-family: 'Helvetica Neue', sans-serif;
             margin: 0;
             padding: 0;
-            background-color: #e9ecef;
+            background: linear-gradient(to right, #ece9e6, #ffffff);
+            color: #333;
         }
         .container {
-            max-width: 800px;
-            margin: 40px auto;
-            background-color: #fff;
-            border-radius: 10px;
-            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
-            padding: 25px 30px;
+            max-width: 850px;
+            margin: 50px auto;
+            background-color: #f9f9f9;
+            border-radius: 15px;
+            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2);
+            overflow: hidden;
+            padding: 20px 40px;
         }
         header {
             text-align: center;
-            margin-bottom: 30px;
+            background: #c107cb;
+            color: white;
+            padding: 30px 0;
+            border-radius: 15px 15px 0 0;
         }
         header h1 {
             margin: 0;
-            font-size: 2.2rem;
-            color: #333;
+            font-size: 2.5rem;
+            font-weight: bold;
         }
         header p {
-            font-size: 1rem;
-            color: #666;
             margin: 5px 0;
+            font-size: 1rem;
+        }
+        header a {
+            color: #ffc107;
+            text-decoration: none;
         }
         .section {
             margin-bottom: 30px;
         }
         .section h2 {
-            font-size: 1.6rem;
-            color: #007bff;
-            border-bottom: 2px solid #007bff;
-            margin-bottom: 15px;
-            padding-bottom: 5px;
+            font-size: 1.8rem;
+            color: #c107cb;
+            border-left: 5px solid #c107cb;
+            padding-left: 10px;
+            margin-bottom: 20px;
         }
         .section-content {
             margin-left: 15px;
@@ -49,18 +57,30 @@
         ul {
             list-style: none;
             padding: 0;
+            margin: 0;
         }
         ul li {
-            margin-bottom: 8px;
+            margin-bottom: 10px;
+            padding-left: 20px;
+            position: relative;
+        }
+        ul li::before {
+            content: '\2022';
+            color: #c107cbff;
+            font-weight: bold;
+            position: absolute;
+            left: 0;
+        }
+        .skills {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
         }
         .skills span {
-            display: inline-block;
-            background-color: #007bff;
+            background-color: #c107cb;
             color: white;
-            padding: 6px 12px;
-            border-radius: 12px;
-            margin-right: 6px;
-            margin-bottom: 6px;
+            padding: 8px 12px;
+            border-radius: 5px;
             font-size: 0.9rem;
         }
     </style>
@@ -68,14 +88,14 @@
 <body>
     <div class="container">
         <header>
-            <h1>Your Full Name</h1>
-            <p>Email: example@example.com | Phone: (123) 456-7890</p>
-            <p>linkedIn: <a href="#">linkedin.com/yourusername.com</a> | GitHub: <a href="#">github.com/yourusername</a></p>
+            <h1>Your Name</h1>
+            <p>Email: <a href="mailto:abc@example.com">abc@example.com</a> | Phone: (123) 456-7890</p>
+            <p>Portfolio: <a href="#">linkedin.com/yourusername</a> | GitHub: <a href="#">github.com/yourusername</a></p>
         </header>
 
         <section class="section">
             <h2>About Me</h2>
-            <p class="section-content">Write a short and compelling introduction about yourself."</p>
+            <p class="section-content">I am an enthusiastic professional with a strong background in [your field]. My expertise lies in [specific skills or achievements], and I thrive in environments that challenge me to grow and innovate.</p>
         </section>
 
         <section class="section">
@@ -84,16 +104,16 @@
                 <h3>Job Title</h3>
                 <p>Company Name | Start Date - End Date</p>
                 <ul>
-                    <li>Key accomplishment or responsibility 1</li>
-                    <li>Key accomplishment or responsibility 2</li>
+                    <li>Implemented [specific tasks] that resulted in [measurable outcomes].</li>
+                    <li>Collaborated with [team or clients] to achieve [goals or projects].</li>
                 </ul>
             </div>
             <div class="section-content">
                 <h3>Another Job Title</h3>
                 <p>Company Name | Start Date - End Date</p>
                 <ul>
-                    <li>Key accomplishment or responsibility 1</li>
-                    <li>Key accomplishment or responsibility 2</li>
+                    <li>Led [specific projects] resulting in [key accomplishments].</li>
+                    <li>Enhanced [processes or workflows] to improve efficiency.</li>
                 </ul>
             </div>
         </section>
@@ -112,11 +132,11 @@
 
         <section class="section">
             <h2>Skills</h2>
-            <div class="section-content">
-                <span>Skill 1</span>
-                <span>Skill 2</span>
-                <span>Skill 3</span>
-                <span>Skill 4</span>
+            <div class="skills">
+                <p><b>Skill 1</b></p>
+                <p><b>Skill 2</b></p>
+                <p><b>Skill 3</b></p>
+                <p><b>Skill 4</b></p>
             </div>
         </section>
 
@@ -124,11 +144,11 @@
             <h2>Projects</h2>
             <div class="section-content">
                 <h3>Project Name</h3>
-                <p>Description of the project and your contributions. For example, "Developed a mobile-friendly e-commerce platform that boosted sales by 30%."</p>
+                <p>Developed [project details], which resulted in [impact or results].</p>
             </div>
             <div class="section-content">
                 <h3>Another Project</h3>
-                <p>Description of the project and your contributions.</p>
+                <p>Designed and executed [project details], achieving [specific outcomes].</p>
             </div>
         </section>
     </div>
