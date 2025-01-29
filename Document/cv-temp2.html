@@ -1,0 +1,191 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Resume Template</title>
+    <style>
+        body {
+            font-family: 'Helvetica Neue', sans-serif;
+            margin: 0;
+            padding: 0;
+            background: linear-gradient(to right, #ece9e6, #ffffff);
+            color: #333;
+        }
+        .container {
+            max-width: 850px;
+            margin: 50px auto;
+            background-color: #f9f9f9;
+            border-radius: 15px;
+            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2);
+            overflow: hidden;
+            padding: 20px 40px;
+        }
+        header {
+            text-align: center;
+            background: #0731cb;
+            color: white;
+            padding: 30px 0;
+            border-radius: 15px 15px 0 0;
+        }
+        header h1 {
+            margin: 0;
+            font-size: 2.5rem;
+            font-weight: bold;
+        }
+        header p {
+            margin: 5px 0;
+            font-size: 1rem;
+        }
+        header a {
+            color: #ffc107;
+            text-decoration: none;
+        }
+        .section {
+            margin-bottom: 30px;
+        }
+        .section h2 {
+            font-size: 1.8rem;
+            color: #0731cb;
+            border-left: 5px solid #0731cb;
+            padding-left: 10px;
+            margin-bottom: 20px;
+        }
+        .section-content {
+            margin-left: 15px;
+        }
+        ul {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+        }
+        ul li {
+            margin-bottom: 10px;
+            padding-left: 20px;
+            position: relative;
+        }
+        ul li::before {
+            content: '\\2022';
+            color: #0731cb;
+            font-weight: bold;
+            position: absolute;
+            left: 0;
+        }
+        .skills {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+        }
+        .skills span {
+            background-color: #0731cb;
+            color: white;
+            padding: 8px 12px;
+            border-radius: 5px;
+            font-size: 0.9rem;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header id="header"></header>
+
+        <section class="section" id="about"></section>
+
+        <section class="section" id="experience"></section>
+
+        <section class="section" id="education"></section>
+
+        <section class="section" id="skills"></section>
+
+        <section class="section" id="projects"></section>
+    </div>
+
+    <script>
+        const resumeData = {
+            name: "Your name",
+            email: "name@example.com",
+            phone: "+91 1234567890",
+            portfolio: "linkedin.com/in/username",
+            github: "github.com/username",
+            about: "I am an enthusiastic professional with a strong background in software development. My expertise lies in creating efficient, scalable web applications.",
+            experiences: [
+                {
+                    title: "role",
+                    company: "company",
+                    duration: "start - end",
+                    tasks: [
+                        "point 1",
+                        "point 2."
+                    ]
+                },
+                {
+                    title: "role",
+                    company: "company",
+                    duration: "start - end",
+                    tasks: [
+                        "point 1.",
+                        "point 2."
+                    ]
+                }
+            ],
+            education: [
+                { degree: "Qualification", institution: "University", duration: "start - end" }
+            ],
+            skills: ["skill 1", "skill 2", "skill 3", "skill 4"],
+            projects: [
+                { name: "Project 1", details: "detail 1." },
+                { name: "Project 2", details: "detail 2." }
+            ]
+        };
+
+        document.getElementById("header").innerHTML = `
+            <h1>${resumeData.name}</h1>
+            <p>Email: <a href="mailto:${resumeData.email}">${resumeData.email}</a> | Phone: ${resumeData.phone}</p>
+            <p>Portfolio: <a href="#">${resumeData.portfolio}</a> | GitHub: <a href="#">${resumeData.github}</a></p>
+        `;
+
+        document.getElementById("about").innerHTML = `
+            <h2>About Me</h2>
+            <p class="section-content">${resumeData.about}</p>
+        `;
+
+        document.getElementById("experience").innerHTML = `
+            <h2>Professional Experience</h2>
+            ${resumeData.experiences.map(exp => `
+                <div class="section-content">
+                    <h3>${exp.title}</h3>
+                    <p>${exp.company} | ${exp.duration}</p>
+                    <ul>${exp.tasks.map(task => `<li>${task}</li>`).join('')}</ul>
+                </div>
+            `).join('')}
+        `;
+
+        document.getElementById("education").innerHTML = `
+            <h2>Education</h2>
+            ${resumeData.education.map(edu => `
+                <div class="section-content">
+                    <h3>${edu.degree}</h3>
+                    <p>${edu.institution} | ${edu.duration}</p>
+                </div>
+            `).join('')}
+        `;
+
+        document.getElementById("skills").innerHTML = `
+            <h2>Skills</h2>
+            <div class="skills">
+                ${resumeData.skills.map(skill => `<span>${skill}</span>`).join('')}
+            </div>
+        `;
+
+        document.getElementById("projects").innerHTML = `
+            <h2>Projects</h2>
+            ${resumeData.projects.map(proj => `
+                <div class="section-content">
+                    <h3>${proj.name}</h3>
+                    <p>${proj.details}</p>
+                </div>
+            `).join('')}
+        `;
+    </script>
+</body>
+</html>
