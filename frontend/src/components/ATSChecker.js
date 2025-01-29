@@ -1,6 +1,10 @@
 import React from 'react';
+import { useNavigate } from 'react-router-dom';
+import '../styles.css';
 
 function ATSChecker() {
+  const navigate = useNavigate();
+
   const handleSubmit = (event) => {
     event.preventDefault();
     const fileInput = document.getElementById('resume-upload');
@@ -14,23 +18,55 @@ function ATSChecker() {
   };
 
   return (
-    <div className="container">
-      <header>
-        <h1>ATS Checker</h1>
+    <div>
+      <header className="header">
+        <div className="header-content">
+          <h1 onClick={() => navigate('/index')} style={{ cursor: 'pointer' }}>Career Catalyst</h1>
+          <nav>
+            <button onClick={() => navigate('/ats-checker')} className="button button-secondary">ATS Checker</button>
+            <button onClick={() => navigate('/resume-builder')} className="button button-secondary">Resume Builder</button>
+            <button 
+              onClick={() => {
+                localStorage.removeItem('authenticated');
+                localStorage.removeItem('username');
+                navigate('/login');
+              }}
+              className="button button-secondary"
+            >
+              Logout
+            </button>
+          </nav>
+        </div>
       </header>
-      <main>
+
+      <section className="hero">
+        <div className="container">
+          <h1>ATS Checker</h1>
+          <p>Upload your resume to check its ATS compatibility.</p>
+        </div>
+      </section>
+
+      <main className="container">
         <section>
           <h2>Upload Your Resume</h2>
-          <form id="ats-checker-form" onSubmit={handleSubmit} enctype="multipart/form-data">
-            <label htmlFor="resume-upload">Select a resume file:</label>
-            <input type="file" id="resume-upload" name="resume" accept=".pdf,.doc,.docx" required />
-            <button type="submit">Check ATS Score</button>
+          <form id="ats-checker-form" onSubmit={handleSubmit} className="form" encType="multipart/form-data">
+            <div className="form-group">
+              <label htmlFor="resume-upload" className="form-label">File formats accepted are .pdf,.doc,.docx</label>
+              <input type="file" id="resume-upload" name="resume" className="form-input" accept=".pdf,.doc,.docx" required />
+            </div>
+            <button type="submit" className="button w-full">Check ATS Score</button>
           </form>
           <div id="ats-score-result" className="hidden">
             <h3>Your ATS Score: <span id="ats-score"></span></h3>
           </div>
         </section>
       </main>
+
+      <footer className="footer">
+        <div className="container">
+          <p onClick={() => navigate('/index')} style={{ cursor: 'pointer' }}>&copy; 2025 Career Catalyst. All rights reserved.</p>
+        </div>
+      </footer>
     </div>
   );
 }

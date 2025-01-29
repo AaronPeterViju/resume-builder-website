@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, Link } from 'react-router-dom';
 import axios from 'axios';
+import '../styles.css';
 
 function Signup() {
   const [username, setUsername] = useState('');
@@ -24,32 +25,46 @@ function Signup() {
   };
 
   return (
-    <div className="container">
-      <header>
-        <h1>Sign Up</h1>
-      </header>
-      <main>
+    <div className="min-h-screen flex items-center justify-center bg-gray-100">
+      <div className="centered-box">
+        <h2 className="text-2xl font-bold mb-6 text-center">Sign Up</h2>
         <form onSubmit={handleSubmit}>
-          <div className="form-group">
-            <label htmlFor="username">Username:</label>
-            <input type="text" id="username" value={username} onChange={(e) => setUsername(e.target.value)} required />
+          <div className="form-group mb-4">
+            <label className="form-label">Username</label>
+            <input
+              type="text"
+              className="form-input"
+              value={username}
+              onChange={(e) => setUsername(e.target.value)}
+              required
+            />
           </div>
-          <div className="form-group">
-            <label htmlFor="email">Email:</label>
-            <input type="email" id="email" value={email} onChange={(e) => setEmail(e.target.value)} required />
+          <div className="form-group mb-4">
+            <label className="form-label">Email</label>
+            <input
+              type="email"
+              className="form-input"
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
+              required
+            />
           </div>
-          <div className="form-group">
-            <label htmlFor="password">Password:</label>
-            <input type="password" id="password" value={password} onChange={(e) => setPassword(e.target.value)} required />
+          <div className="form-group mb-6">
+            <label className="form-label">Password</label>
+            <input
+              type="password"
+              className="form-input"
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
+              required
+            />
           </div>
-          <div className="form-group">
-            <button type="submit">Sign Up</button>
-          </div>
+          <button type="submit" className="button w-full">Sign Up</button>
         </form>
-        <div className="form-footer">
-          <p>Already have an account? <a href="/login">Login</a></p>
-        </div>
-      </main>
+        <p className="text-center mt-4">
+          Already have an account? <Link to="/login" className="text-primary">Login</Link>
+        </p>
+      </div>
     </div>
   );
 }

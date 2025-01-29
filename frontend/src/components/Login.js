@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, Link } from 'react-router-dom';
 import axios from 'axios';
+import '../styles.css';
 
 function Login() {
   const [username, setUsername] = useState('');
@@ -13,38 +14,47 @@ function Login() {
       const response = await axios.post('http://localhost:5000/api/auth/login', { username, password });
       if (response.status === 200) {
         localStorage.setItem('authenticated', 'true');
+        localStorage.setItem('username', username); // Store the username
         navigate('/index'); // Redirect to /index
       } else {
         alert('Invalid username or password');
       }
     } catch (error) {
-      alert('Error logging in: ' + error.message);
+      alert('Error : Incorrect Credentials - ' + error.message);
     }
   };
 
   return (
-    <div className="container">
-      <header>
-        <h1>Login</h1>
-      </header>
-      <main>
+    <div className="min-h-screen flex items-center justify-center bg-gray-100">
+      <div className="centered-box">
+        <h2 className="text-2xl font-bold mb-6 text-center">Login</h2>
         <form onSubmit={handleSubmit}>
-          <div className="form-group">
-            <label htmlFor="username">Username:</label>
-            <input type="text" id="username" value={username} onChange={(e) => setUsername(e.target.value)} required />
+          <div className="form-group mb-4">
+            <label className="form-label">Username</label>
+            <input
+              type="text"
+              className="form-input"
+              value={username}
+              onChange={(e) => setUsername(e.target.value)}
+              required
+            />
           </div>
-          <div className="form-group">
-            <label htmlFor="password">Password:</label>
-            <input type="password" id="password" value={password} onChange={(e) => setPassword(e.target.value)} required />
+          <div className="form-group mb-6">
+            <label className="form-label">Password</label>
+            <input
+              type="password"
+              className="form-input"
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
+              required
+            />
           </div>
-          <div className="form-group">
-            <button type="submit">Login</button>
-          </div>
+          <button type="submit" className="button w-full">Login</button>
         </form>
-        <div className="form-footer">
-          <p>Don't have an account? <a href="/signup">Sign up</a></p>
-        </div>
-      </main>
+        <p className="text-center mt-4">
+          Don't have an account? <Link to="/signup" className="text-primary">Sign up</Link>
+        </p>
+      </div>
     </div>
   );
 }

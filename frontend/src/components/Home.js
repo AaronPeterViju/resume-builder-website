@@ -1,34 +1,50 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
+import '../styles.css';
 
 function Home() {
   return (
-    <div className="container">
-      <header>
-        <h1>Welcome to Career Catalyst</h1>
+    <div>
+      <header className="header">
+        <div className="header-content">
+          <h1>Career Catalyst</h1>
+          <nav>
+            <Link to="/login" className="button">Login</Link>
+          </nav>
+        </div>
       </header>
-      <main>
-        <section className="description">
-          <h3>Enhance Your Job Search Effortlessly</h3>
-          <p>The aim of this project is to develop an automated resume builder that enhances the resume creation process by utilizing user-provided inputs, such as personal details, educational qualifications, and work experience. Our system offers a variety of customizable templates, allowing you to tailor your resume to specific industries and job roles.</p>
-          <p>By simplifying the creation and formatting processes, this tool significantly reduces the time and effort required by job seekers. Additionally, the resumes generated are optimized for Applicant Tracking Systems (ATS), ensuring higher visibility in recruitment processes.</p>
-        </section>
-        <section className="description2">
-          <h3>Key Features:</h3>
-          <ul>
-            <li>A variety of customizable resume templates.</li>
-            <li>Easy input of personal details, education, and work experience.</li>
-            <li>Optimized resumes for better visibility in Applicant Tracking Systems (ATS).</li>
-            <li>An ATS checker to verify and improve your resume's compatibility.</li>
-          </ul>
-          <p>To create your resume or check your ATS score, please log in. <strong>Login is compulsory.</strong></p>
-        </section>
-        <section className="buttons">
-          <Link to="/login" className="button">Log In</Link>
-        </section>
-      </main>
-      <footer>
-        <p>&copy; 2025 Automated Resume Builder</p>
+
+      <section className="hero">
+        <div className="container">
+          <h1>Create Professional Resumes in Minutes</h1>
+          <p>Also check ATS score of your resume with our modern tools</p>
+          <Link to="/signup" className="button">Get Started Free</Link>
+        </div>
+      </section>
+
+      <section className="features">
+        <div className="container">
+          <div className="grid">
+            <div className="feature-card">
+              <h3>ATS-Optimized Templates</h3>
+              <p>Our templates are designed to pass Applicant Tracking Systems and catch recruiters' attention.</p>
+            </div>
+            <div className="feature-card">
+              <h3>Easy to Use</h3>
+              <p>Simple interface guides you through the resume creation process step by step.</p>
+            </div>
+            <div className="feature-card">
+              <h3>ATS Score Checker</h3>
+              <p>Instantly analyze your resume's ATS compatibility and get improvement suggestions.</p>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <footer className="footer">
+        <div className="container">
+          <p>&copy; 2025 Career Catalyst All rights reserved</p>
+        </div>
       </footer>
     </div>
   );
