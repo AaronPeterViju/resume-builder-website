@@ -25,7 +25,7 @@ function Signup() {
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gray-100">
+    <div style={{ background: 'linear-gradient(to right, #1e3c72, #2a5298, #4facfe)', minHeight: '100vh' }} className="min-h-screen flex items-center justify-center">
       <div className="centered-box">
         <h2 className="text-2xl font-bold mb-6 text-center">Sign Up</h2>
         <form onSubmit={handleSubmit}>
