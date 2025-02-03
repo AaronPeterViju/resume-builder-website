@@ -4,7 +4,7 @@ import '../styles.css';
 
 function Home() {
   return (
-    <div>
+    <div style={{ background: 'linear-gradient(to right,#6e8efb, #a777e3)', minHeight: '100vh' }}>
       <header className="header">
         <div className="header-content">
           <h1>Career Catalyst</h1>

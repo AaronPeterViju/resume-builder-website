@@ -19,7 +19,7 @@ function Index() {
   }, [navigate]);
 
   return (
-    <div>
+    <div style={{ background: 'linear-gradient(to right,#6e8efb, #a777e3)', minHeight: '100vh' }}>
       <header className="header">
         <div className="header-content">
           <h1 onClick={() => navigate('/index')} style={{ cursor: 'pointer' }}>Career Catalyst</h1>
