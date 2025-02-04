@@ -74,8 +74,8 @@ function ATSChecker() {
           <h2>Upload Your Resume</h2>
           <form id="ats-checker-form" onSubmit={handleSubmit} className="form" encType="multipart/form-data">
             <div className="form-group">
-              <label htmlFor="resume-upload" className="form-label">File formats accepted are .pdf, .doc, .docx</label>
-              <input type="file" id="resume-upload" name="resume" className="form-input" accept=".pdf,.doc,.docx" required />
+              <label htmlFor="resume-upload" className="form-label">File formats accepted is .pdf</label>
+              <input type="file" id="resume-upload" name="resume" className="form-input" accept=".pdf" required />
             </div>
             <button type="submit" className="button w-full">Check ATS Score</button>
           </form>
