@@ -14,8 +14,9 @@ function Login() {
       const response = await axios.post('http://localhost:5000/api/auth/login', { username, password });
       if (response.status === 200) {
         localStorage.setItem('authenticated', 'true');
-        localStorage.setItem('username', username); // Store the username
-        navigate('/index'); // Redirect to /index
+        localStorage.setItem('username', username);
+        localStorage.setItem('userId', response.data.userId); // Store the user ID
+        navigate('/index');
       } else {
         alert('Invalid username or password');
       }
