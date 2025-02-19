@@ -418,7 +418,7 @@ function ResumeBuilder() {
     <div>
       <header className="header">
         <div className="header-content">
-          <h1 onClick={() => navigate('/index')} style={{ cursor: 'pointer' }}>Career Catalyst</h1>
+          <h1 onClick={() => navigate('/index')} style={{ cursor: 'pointer' }}>Career Catalyst</h1><img class="logo" src="logo512.png" alt="Hello world" width="100" height="100"></img>
           <nav>
             <button onClick={() => navigate('/ats-checker')} className="button button-secondary">ATS Checker</button>
             <button onClick={() => navigate('/resume-builder')} className="button button-secondary">Resume Builder</button>
