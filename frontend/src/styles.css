@@ -228,3 +228,8 @@ body {
     grid-template-columns: 1fr;
   }
 }
+.logo {
+     position: absolute;
+    
+    left: 400px; /* Distance from the left of the viewport */
+  }
