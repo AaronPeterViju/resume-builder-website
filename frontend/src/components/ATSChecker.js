@@ -8,6 +8,24 @@ function ATSChecker() {
   const [atsScore, setAtsScore] = useState(null);
   const [suggestions, setSuggestions] = useState([]);
 
+  // Remove unused formData state and setFormData
+  const [formData] = useState({
+    name: '',
+    email: '',
+    phone: '',
+    linkedin: '',
+    github: '',
+    about: '',
+    experience: [],
+    education: {},
+    skills: [],
+    projects: []
+  });
+
+  // Remove unused formatMonthYear function
+  
+  // Remove unused downloadPDF function since it's not being used in ATSChecker
+
   const handleSubmit = async (event) => {
     event.preventDefault();
     const fileInput = document.getElementById('resume-upload');
