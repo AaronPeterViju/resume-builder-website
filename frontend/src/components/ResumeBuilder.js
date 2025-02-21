@@ -1,306 +1,35 @@
-import React, { useState } from 'react';
+import React, { useState, useRef, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import '../styles.css';
 
-//popular jobs
-const commonRoles = [
-  'Software Engineer',
-  'Product Manager',
-  'Data Scientist',
-  'Project Manager',
-  'Software Tester',
-  'Other'
-];
-
-// basic form fields 
-const formFields = [
-  { name: 'name', label: 'Name', type: 'text' },
-  { name: 'email', label: 'Email', type: 'email' },
-  { name: 'phone', label: 'Phone', type: 'tel' },
-  { name: 'linkedin', label: 'LinkedIn', type: 'url' },
-  { name: 'github', label: 'GitHub', type: 'url' },
-  { name: 'about', label: 'About Me', type: 'textarea' }
-];
-
-// 
-const styles = `
-  .resume-preview {
-    margin-top: 2rem;
-    padding: 20px;
-    background: #fff;
-    border-radius: 8px;
-    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
-  }
-  
-  .preview {
-    margin-top: 1rem;
-    overflow: auto;
-  }
-`;
-
-// resume templates 
-const templateConfigs = {
-  // temp 1 minimal design
-  template1: {
-    label: 'temp1',
-    render: (data, formatDate) => (
-      <div className="container" data-template="template1">
-        <style>{styles}{`
-          .container[data-template="template1"] { max-width: 850px; margin: 30px auto; padding: 40px; font-family: 'Helvetica Neue', Arial, sans-serif; box-shadow: 0 5px 15px rgba(0,0,0,0.1); }
-          .header[data-template="template1"] { text-align: center; padding-bottom: 30px; border-bottom: 2px solid #e2e8f0; }
-          .header[data-template="template1"] h1 { font-size: 36px; color: #2d3748; margin: 0; font-weight: 700; }
-          .header[data-template="template1"] h2 { font-size: 18px; color: #4a5568; margin: 10px 0; }
-          .contact-info[data-template="template1"] { display: flex; justify-content: center; gap: 20px; margin-top: 15px; font-size: 14px; color: #4a5568; }
-          .section[data-template="template1"] { margin-bottom: 25px; }
-          .section-title[data-template="template1"] { font-size: 20px; color: #2d3748; font-weight: 600; margin-bottom: 15px; padding-bottom: 5px; border-bottom: 2px solid #e2e8f0; }
-          .experience-item[data-template="template1"] { margin-bottom: 20px; padding-bottom: 20px; border-bottom: 1px solid #e2e8f0; }
-          .experience-title[data-template="template1"] { font-size: 16px; font-weight: 600; color: #2d3748; }
-          .experience-company[data-template="template1"] { color: #4a5568; margin: 5px 0; }
-          .experience-date[data-template="template1"] { color: #718096; font-size: 14px; margin-bottom: 10px; }
-          .experience-details[data-template="template1"] { list-style-type: disc; padding-left: 20px; margin: 10px 0; }
-          .experience-details[data-template="template1"] li { color: #4a5568; margin-bottom: 5px; font-size: 14px; }
-          .skills-list[data-template="template1"] { display: flex; flex-wrap: wrap; gap: 10px; }
-          .skill-item[data-template="template1"] { background: #edf2f7; padding: 6px 12px; border-radius: 4px; font-size: 14px; color: #2d3748; }
-        `}</style>
-        <header className="header" data-template="template1">
-          <h1>{data.name}</h1>
-          <h2>{data.title}</h2>
-          <div className="contact-info" data-template="template1">
-            <a href={`mailto:${data.email}`}>{data.email}</a>
-            <span>{data.phone}</span>
-            <a href={data.linkedin} target="_blank" rel="noopener noreferrer">LinkedIn</a>
-            <a href={data.github} target="_blank" rel="noopener noreferrer">GitHub</a>
-          </div>
-        </header>
-        <div className="section" data-template="template1">
-          <div className="section-title" data-template="template1">About</div>
-          <p>{data.about}</p>
-        </div>
-        <div className="section" data-template="template1">
-          <div className="section-title" data-template="template1">Experience</div>
-          {data.experience.map((exp, index) => (
-            <div key={index} className="experience-item" data-template="template1">
-              <div className="experience-title" data-template="template1">{exp.title}</div>
-              <div className="experience-company" data-template="template1">{exp.company}</div>
-              <div className="experience-date" data-template="template1">
-                {formatDate(exp.startDate)} - {exp.isPresent ? 'Present' : formatDate(exp.endDate)}
-              </div>
-              <ul className="experience-details" data-template="template1">
-                {exp.details.map((detail, i) => <li key={i}>{detail}</li>)}
-              </ul>
-            </div>
-          ))}
-        </div>
-        <div className="section" data-template="template1">
-          <div className="section-title" data-template="template1">Education</div>
-          <div className="experience-item" data-template="template1">
-            <div className="experience-title" data-template="template1">{data.education.qualification}</div>
-            <div className="experience-company" data-template="template1">{data.education.institution}</div>
-            <div className="experience-date" data-template="template1">
-              {formatDate(data.education.startDate)} - {data.education.isPresent ? 'Present' : formatDate(data.education.endDate)}
-            </div>
-          </div>
-        </div>
-        <div className="section" data-template="template1">
-          <div className="section-title" data-template="template1">Skills</div>
-          <div className="skills-list" data-template="template1">
-            {data.skills.map((skill, index) => <div key={index} className="skill-item" data-template="template1">{skill}</div>)}
-          </div>
-        </div>
-        <div className="section" data-template="template1">
-          <div className="section-title" data-template="template1">Projects</div>
-          {data.projects.map((project, index) => (
-            <div key={index} className="experience-item" data-template="template1">
-              <div className="experience-title" data-template="template1">{project.name}</div>
-              <div className="experience-date" data-template="template1">
-                {formatDate(project.durationStart)} - {formatDate(project.durationEnd)}
-              </div>
-              <p>{project.details}</p>
-            </div>
-          ))}
-        </div>
-      </div>
-    )
-  },
-
-  // temp 2 gradient coulou
-  template2: {
-    label: 'temp2',
-    render: (data, formatDate) => (
-      <div className="container" data-template="template2">
-        <style>{styles}{`
-          .container[data-template="template2"] { max-width: 850px; margin: 30px auto; padding: 40px; font-family: 'Helvetica Neue', Arial, sans-serif; box-shadow: 0 10px 25px rgba(0,0,0,0.1); }
-          .header[data-template="template2"] { background: linear-gradient(135deg, #6366f1, #a855f7); color: white; padding: 40px; margin: -40px -40px 40px; }
-          .header[data-template="template2"] h1 { font-size: 42px; margin: 0; font-weight: 800; }
-          .header[data-template="template2"] h2 { font-size: 20px; margin: 10px 0; opacity: 0.9; }
-          .contact-info[data-template="template2"] { background: rgba(255,255,255,0.1); padding: 15px 25px; border-radius: 8px; margin-top: 20px; display: flex; gap: 20px; }
-          .contact-info[data-template="template2"] a { color: white; text-decoration: none; }
-          .section[data-template="template2"] { margin-bottom: 35px; }
-          .section-title[data-template="template2"] { font-size: 24px; color: #6366f1; font-weight: 700; margin-bottom: 20px; display: flex; align-items: center; }
-          .section-title[data-template="template2"]::after { content: ''; flex: 1; height: 3px; margin-left: 15px; background: linear-gradient(to right, #6366f1, transparent); }
-          .experience-item[data-template="template2"] { margin-bottom: 25px; padding: 20px; background: #f8fafc; border-radius: 8px; border-left: 4px solid #6366f1; }
-          .experience-title[data-template="template2"] { font-size: 18px; font-weight: 600; color: #1e293b; }
-          .experience-company[data-template="template2"] { color: #6366f1; font-weight: 500; margin: 5px 0; }
-          .experience-date[data-template="template2"] { color: #64748b; font-size: 14px; margin-bottom: 10px; }
-          .experience-details[data-template="template2"] { list-style: none; padding-left: 20px; }
-          .experience-details[data-template="template2"] li { position: relative; padding-left: 20px; margin-bottom: 8px; color: #475569; }
-          .experience-details[data-template="template2"] li::before { content: "→"; position: absolute; left: 0; color: #6366f1; }
-          .skills-grid[data-template="template2"] { display: grid; grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); gap: 15px; }
-          .skill-item[data-template="template2"] { background: linear-gradient(135deg, #6366f1, #a855f7); color: white; padding: 10px 15px; border-radius: 8px; text-align: center; }
-        `}</style>
-        <header className="header" data-template="template2">
-          <h1>{data.name}</h1>
-          <h2>{data.title}</h2>
-          <div className="contact-info" data-template="template2">
-            <a href={`mailto:${data.email}`}>{data.email}</a>
-            <span>{data.phone}</span>
-            <a href={data.linkedin} target="_blank" rel="noopener noreferrer">LinkedIn</a>
-            <a href={data.github} target="_blank" rel="noopener noreferrer">GitHub</a>
-          </div>
-        </header>
-        <div className="section" data-template="template2">
-          <div className="section-title" data-template="template2">About</div>
-          <p>{data.about}</p>
-        </div>
-        <div className="section" data-template="template2">
-          <div className="section-title" data-template="template2">Experience</div>
-          {data.experience.map((exp, index) => (
-            <div key={index} className="experience-item" data-template="template2">
-              <div className="experience-title" data-template="template2">{exp.title}</div>
-              <div className="experience-company" data-template="template2">{exp.company}</div>
-              <div className="experience-date" data-template="template2">
-                {formatDate(exp.startDate)} - {exp.isPresent ? 'Present' : formatDate(exp.endDate)}
-              </div>
-              <ul className="experience-details" data-template="template2">
-                {exp.details.map((detail, i) => <li key={i}>{detail}</li>)}
-              </ul>
-            </div>
-          ))}
-        </div>
-        <div className="section" data-template="template2">
-          <div className="section-title" data-template="template2">Education</div>
-          <div className="experience-item" data-template="template2">
-            <div className="experience-title" data-template="template2">{data.education.qualification}</div>
-            <div className="experience-company" data-template="template2">{data.education.institution}</div>
-            <div className="experience-date" data-template="template2">
-              {formatDate(data.education.startDate)} - {data.education.isPresent ? 'Present' : formatDate(data.education.endDate)}
-            </div>
-          </div>
-        </div>
-        <div className="section" data-template="template2">
-          <div className="section-title" data-template="template2">Skills</div>
-          <div className="skills-grid" data-template="template2">
-            {data.skills.map((skill, index) => <div key={index} className="skill-item" data-template="template2">{skill}</div>)}
-          </div>
-        </div>
-        <div className="section" data-template="template2">
-          <div className="section-title" data-template="template2">Projects</div>
-          {data.projects.map((project, index) => (
-            <div key={index} className="experience-item" data-template="template2">
-              <div className="experience-title" data-template="template2">{project.name}</div>
-              <div className="experience-date" data-template="template2">
-                {formatDate(project.durationStart)} - {formatDate(project.durationEnd)}
-              </div>
-              <p>{project.details}</p>
-            </div>
-          ))}
-        </div>
-      </div>
-    )
-  },
-
-  // Temp3 gradient blue
-  template3: {
-    label: 'temp3',
-    render: (data, formatDate) => (
-      <div className="container" data-template="template3">
-        <style>{styles}{`
-          .container[data-template="template3"] { max-width: 850px; margin: 30px auto; padding: 40px; font-family: 'Helvetica Neue', Arial, sans-serif; box-shadow: 0 10px 25px rgba(0,0,0,0.1); }
-          .header[data-template="template3"] { position: relative; padding: 40px; margin: -40px -40px 40px; background: linear-gradient(45deg, #000046, #1CB5E0); color: white; }
-          .header[data-template="template3"] h1 { font-size: 44px; margin: 0; font-weight: 700; letter-spacing: 1px; }
-          .header[data-template="template3"] h2 { font-size: 20px; margin: 10px 0 20px; font-weight: 400; opacity: 0.9; }
-          .contact-info[data-template="template3"] { display: flex; gap: 25px; flex-wrap: wrap; padding: 15px 0; border-top: 1px solid rgba(255,255,255,0.2); margin-top: 20px; }
-          .contact-info[data-template="template3"] a { color: white; text-decoration: none; }
-          .section[data-template="template3"] { margin-bottom: 35px; background: #ffffff; border-radius: 8px; padding: 25px; }
-          .section-title[data-template="template3"] { font-size: 24px; color: #000046; font-weight: 700; margin-bottom: 20px; text-transform: uppercase; letter-spacing: 1px; border-bottom: 3px solid #1CB5E0; padding-bottom: 10px; }
-          .experience-item[data-template="template3"] { margin-bottom: 25px; padding: 20px; background: #f8fafc; border-radius: 8px; position: relative; transition: transform 0.2s; }
-          .experience-item[data-template="template3"]:hover { transform: translateX(5px); }
-          .experience-title[data-template="template3"] { font-size: 18px; font-weight: 600; color: #000046; }
-          .experience-company[data-template="template3"] { color: #1CB5E0; font-weight: 500; margin: 5px 0; }
-          .experience-date[data-template="template3"] { color: #64748b; font-size: 14px; margin-bottom: 10px; }
-          .skills-grid[data-template="template3"] { display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: 15px; }
-          .skill-item[data-template="template3"] { background: linear-gradient(45deg, #000046, #1CB5E0); color: white; padding: 12px 20px; border-radius: 8px; font-size: 15px; font-weight: 500; text-align: center; transition: all 0.3s; }
-        `}</style>
-        <header className="header" data-template="template3">
-          <h1>{data.name}</h1>
-          <h2>{data.title}</h2>
-          <div className="contact-info" data-template="template3">
-            <a href={`mailto:${data.email}`}>{data.email}</a>
-            <span>{data.phone}</span>
-            <a href={data.linkedin} target="_blank" rel="noopener noreferrer">LinkedIn</a>
-            <a href={data.github} target="_blank" rel="noopener noreferrer">GitHub</a>
-          </div>
-        </header>
-        <div className="section" data-template="template3">
-          <div className="section-title" data-template="template3">About</div>
-          <p>{data.about}</p>
-        </div>
-        <div className="section" data-template="template3">
-          <div className="section-title" data-template="template3">Experience</div>
-          {data.experience.map((exp, index) => (
-            <div key={index} className="experience-item" data-template="template3">
-              <div className="experience-title" data-template="template3">{exp.title}</div>
-              <div className="experience-company" data-template="template3">{exp.company}</div>
-              <div className="experience-date" data-template="template3">
-                {formatDate(exp.startDate)} - {exp.isPresent ? 'Present' : formatDate(exp.endDate)}
-              </div>
-              <ul className="experience-details" data-template="template3">
-                {exp.details.map((detail, i) => <li key={i}>{detail}</li>)}
-              </ul>
-            </div>
-          ))}
-        </div>
-        <div className="section" data-template="template3">
-          <div className="section-title" data-template="template3">Education</div>
-          <div className="experience-item" data-template="template3">
-            <div className="experience-title" data-template="template3">{data.education.qualification}</div>
-            <div className="experience-company" data-template="template3">{data.education.institution}</div>
-            <div className="experience-date" data-template="template3">
-              {formatDate(data.education.startDate)} - {data.education.isPresent ? 'Present' : formatDate(data.education.endDate)}
-            </div>
-          </div>
-        </div>
-        <div className="section" data-template="template3">
-          <div className="section-title" data-template="template3">Skills</div>
-          <div className="skills-grid" data-template="template3">
-            {data.skills.map((skill, index) => <div key={index} className="skill-item" data-template="template3">{skill}</div>)}
-          </div>
-        </div>
-        <div className="section" data-template="template3">
-          <div className="section-title" data-template="template3">Projects</div>
-          {data.projects.map((project, index) => (
-            <div key={index} className="experience-item" data-template="template3">
-              <div className="experience-title" data-template="template3">{project.name}</div>
-              <div className="experience-date" data-template="template3">
-                {formatDate(project.durationStart)} - {formatDate(project.durationEnd)}
-              </div>
-              <p>{project.details}</p>
-            </div>
-          ))}
-        </div>
-      </div>
-    )
-  }
-};
-
-// function for resume builder
 function ResumeBuilder() {
-  // page navigation
   const navigate = useNavigate();
+  const previewRef = useRef(null);
+  const [pdfMakeReady, setPdfMakeReady] = useState(false);
 
-  // store info from user
+  useEffect(() => {
+    const loadPdfMake = async () => {
+      try {
+        const pdfMake = await import('pdfmake/build/pdfmake');
+        const pdfFonts = await import('pdfmake/build/vfs_fonts');
+        
+        // Initialize pdfMake with fonts
+        pdfMake.default.vfs = pdfFonts.pdfMake.vfs;
+        window.pdfMake = pdfMake.default;
+        
+        setPdfMakeReady(true);
+        console.log('PDF dependencies loaded successfully');
+      } catch (error) {
+        console.error('Error loading PDF dependencies:', error);
+        alert('Failed to load PDF generator. Please refresh the page and try again.');
+      }
+    };
+
+    loadPdfMake();
+  }, []);
+
+  // Define formData state
   const [formData, setFormData] = useState({
-    // Basic information
     name: '',
     title: '',
     email: '',
@@ -308,41 +37,384 @@ function ResumeBuilder() {
     linkedin: '',
     github: '',
     about: '',
-
-    // Work experience
-    experience: [{ 
-      title: '', 
-      company: '', 
-      startDate: '', 
-      endDate: '', 
-      isPresent: false, // Checkbox for current job
-      details: [''] 
-    }],
-
-    // Education section
-    education: { 
-      qualification: '', 
-      institution: '', 
-      startDate: '', 
-      endDate: '', 
-      isPresent: false // Checkbox for current education
-    },
-
-    // Skills and projects sections
+    experience: [{ title: '', company: '', startDate: '', endDate: '', isPresent: false, details: [''] }],
+    education: { qualification: '', institution: '', startDate: '', endDate: '', isPresent: false },
     skills: [''],
     projects: [{ name: '', details: '', durationStart: '', durationEnd: '' }],
-    template: 'template1', 
+    template: 'template1',
   });
 
-  //stores preview of resume
-  const [preview, setPreview] = useState(null);
-
-  // Add this state to track if "Other" is selected
+  const [preview, setPreview] = useState('');
   const [isCustomTitle, setIsCustomTitle] = useState(false);
 
+  // Define formatMonthYear function
   const formatMonthYear = (value) => value ? new Date(value).toLocaleString('default', { month: 'long', year: 'numeric' }) : 'Present';
 
-  // handle form changes
+  const commonRoles = [
+    'Software Engineer',
+    'Product Manager',
+    'Data Scientist',
+    'Project Manager',
+    'Software Tester',
+    'Other'
+  ];
+
+  const formFields = [
+    { name: 'name', label: 'Name', type: 'text' },
+    { name: 'email', label: 'Email', type: 'email' },
+    { name: 'phone', label: 'Phone', type: 'tel' },
+    { name: 'linkedin', label: 'LinkedIn', type: 'url' },
+    { name: 'github', label: 'GitHub', type: 'url' },
+    { name: 'about', label: 'About Me', type: 'textarea' }
+  ];
+
+  const templates = {
+    template1: {
+      label: 'Professional',
+      render: (data, format) => `
+        <div class="resume-container">
+          <style>
+            .resume-container {
+              max-width: 800px;
+              margin: 40px auto;
+              padding: 40px;
+              background: #fff;
+              font-family: 'Times New Roman', serif;
+            }
+            .header {
+              text-align: center;
+              margin-bottom: 30px;
+            }
+            .header h1 {
+              color: #2c3e50;
+              margin: 0;
+              font-size: 28px;
+              font-weight: bold;
+            }
+            .header h2 {
+              color: #7f8c8d;
+              margin: 5px 0;
+              font-size: 18px;
+            }
+            .contact-info {
+              text-align: center;
+              margin-bottom: 30px;
+              font-size: 12px;
+            }
+            .two-column {
+              display: flex;
+              gap: 30px;
+            }
+            .left-column {
+              flex: 3;
+            }
+            .right-column {
+              flex: 7;
+            }
+            .section {
+              margin-bottom: 25px;
+            }
+            .section-title {
+              color: #2c3e50;
+              border-bottom: 2px solid #3498db;
+              padding-bottom: 5px;
+              margin-bottom: 15px;
+              font-size: 16px;
+              font-weight: bold;
+              text-transform: uppercase;
+            }
+            .experience-item, .project-item {
+              margin-bottom: 15px;
+            }
+            .experience-item h3, .project-item h3 {
+              color: #34495e;
+              margin: 0 0 5px 0;
+              font-size: 14px;
+              font-weight: bold;
+            }
+            .date {
+              color: #7f8c8d;
+              font-size: 12px;
+              margin-bottom: 5px;
+            }
+            ul {
+              margin: 5px 0;
+              padding-left: 20px;
+            }
+            li {
+              margin-bottom: 3px;
+              font-size: 12px;
+            }
+            .skills-list {
+              list-style-type: none;
+              padding: 0;
+              margin: 10px 0;
+            }
+            .skill-item {
+              background: #f0f0f0;
+              padding: 5px 10px;
+              margin: 0 0 5px 0;
+              border-radius: 3px;
+              font-size: 12px;
+            }
+          </style>
+
+          <div class="header">
+            <h1>${data.name}</h1>
+            <h2>${data.title}</h2>
+          </div>
+
+          <div class="contact-info">
+            <p>
+              ${data.email} | ${data.phone} | 
+              LinkedIn: ${data.linkedin} | 
+              GitHub: ${data.github}
+            </p>
+          </div>
+
+          <div class="two-column">
+            <div class="left-column">
+              <div class="section">
+                <div class="section-title">Skills</div>
+                <ul class="skills-list">
+                  ${data.skills.map(skill => `<li class="skill-item">${typeof skill === 'object' ? skill.text : skill}</li>`).join('')}
+                </ul>
+              </div>
+
+              <div class="section">
+                <div class="section-title">Education</div>
+                <div class="experience-item">
+                  <h3>${data.education.qualification}</h3>
+                  <div>${data.education.institution}</div>
+                  <div class="date">
+                    ${format(data.education.startDate)} - 
+                    ${data.education.isPresent ? 'Present' : format(data.education.endDate)}
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <div class="right-column">
+              <div class="section">
+                <div class="section-title">Professional Summary</div>
+                <p>${data.about}</p>
+              </div>
+
+              <div class="section">
+                <div class="section-title">Experience</div>
+                ${data.experience.map(exp => `
+                  <div class="experience-item">
+                    <h3>${exp.title}</h3>
+                    <div>${exp.company}</div>
+                    <div class="date">${format(exp.startDate)} - ${exp.isPresent ? 'Present' : format(exp.endDate)}</div>
+                    <ul>
+                      ${exp.details.map(detail => `<li>${typeof detail === 'object' ? detail.text : detail}</li>`).join('')}
+                    </ul>
+                  </div>
+                `).join('')}
+              </div>
+
+              <div class="section">
+                <div class="section-title">Projects</div>
+                ${data.projects.map(project => `
+                  <div class="project-item">
+                    <h3>${project.name}</h3>
+                    <div class="date">${format(project.durationStart)} - ${format(project.durationEnd)}</div>
+                    <p>${project.details}</p>
+                  </div>
+                `).join('')}
+              </div>
+            </div>
+          </div>
+        </div>
+      `
+    },
+    template2: {
+      label: 'Modern Two-Column',
+      render: (data, format) => `
+        <div class="container" data-template="template2">
+          <style>
+            .container[data-template="template2"] {
+              max-width: 850px;
+              margin: 20px auto;
+              padding: 20px;
+              background: #fff;
+              font-family: 'Arial', sans-serif;
+              line-height: 1.6;
+              color: #333;
+            }
+            .header {
+              text-align: center;
+              border-bottom: 2px solid #2c3e50;
+              padding-bottom: 15px;
+              margin-bottom: 20px;
+            }
+            .header h1 {
+              font-size: 32px;
+              margin: 0;
+              color: #2c3e50;
+            }
+            .header h2 {
+              font-size: 18px;
+              font-weight: normal;
+              color: #7f8c8d;
+              margin: 5px 0;
+            }
+            .contact-info {
+              font-size: 14px;
+              margin-bottom: 20px;
+            }
+            .contact-info a {
+              color: #3498db;
+              text-decoration: none;
+            }
+            .two-column {
+              display: flex;
+              gap: 30px;
+            }
+            .left-column {
+              flex: 1;
+              min-width: 200px;
+            }
+            .right-column {
+              flex: 2;
+            }
+            .section {
+              margin-bottom: 25px;
+            }
+            .section-title {
+              font-size: 20px;
+              font-weight: bold;
+              color: #2c3e50;
+              border-bottom: 1px solid #3498db;
+              padding-bottom: 5px;
+              margin-bottom: 15px;
+              text-transform: uppercase;
+            }
+            .experience-item, .education-item, .project-item {
+              margin-bottom: 20px;
+            }
+            .experience-item h3, .project-item h3 {
+              font-size: 18px;
+              margin: 0 0 5px;
+              color: #34495e;
+            }
+            .company, .institution {
+              font-weight: bold;
+              color: #7f8c8d;
+            }
+            .date {
+              font-size: 14px;
+              color: #7f8c8d;
+              margin-bottom: 10px;
+            }
+            ul {
+              padding-left: 20px;
+              margin: 0;
+            }
+            li {
+              margin-bottom: 8px;
+            }
+            .skills-list {
+              list-style: none;
+              padding: 0;
+              display: flex;
+              flex-wrap: wrap;
+              gap: 10px;
+            }
+            .skills-list li {
+              background: #f0f0f0;
+              padding: 5px 10px;
+              border-radius: 4px;
+              font-size: 14px;
+            }
+            @media (max-width: 600px) {
+              .two-column {
+                flex-direction: column;
+              }
+            }
+            @media print {
+              body {
+                margin: 0;
+              }
+              .container {
+                box-shadow: none;
+                margin: 0;
+                padding: 10px;
+              }
+            }
+          </style>
+
+          <div class="header">
+            <h1>${data.name}</h1>
+            <h2>${data.title}</h2>
+          </div>
+
+          <div class="contact-info">
+            <p>Email: <a href="mailto:${data.email}">${data.email}</a> | Phone: ${data.phone} | LinkedIn: <a href="${data.linkedin}" target="_blank">LinkedIn</a> | GitHub: <a href="${data.github}" target="_blank">GitHub</a></p>
+          </div>
+
+          <div class="two-column">
+            <div class="left-column">
+              <div class="section">
+                <h2 class="section-title">Skills</h2>
+                <ul class="skills-list">
+                  ${data.skills.map(skill => `<li>${skill}</li>`).join('')}
+                </ul>
+              </div>
+
+              <div class="section">
+                <h2 class="section-title">Education</h2>
+                <div class="education-item">
+                  <h3>${data.education.qualification}</h3>
+                  <p class="institution">${data.education.institution}</p>
+                  <p class="date">${format(data.education.startDate)} - ${data.education.isPresent ? 'Present' : format(data.education.endDate)}</p>
+                </div>
+              </div>
+            </div>
+
+            <div class="right-column">
+              <div class="section">
+                <h2 class="section-title">Professional Summary</h2>
+                <p>${data.about}</p>
+              </div>
+
+              <div class="section">
+                <h2 class="section-title">Work Experience</h2>
+                ${data.experience.map(exp => `
+                  <div class="experience-item">
+                    <h3>${exp.title}</h3>
+                    <p class="company">${exp.company}</p>
+                    <p class="date">${format(exp.startDate)} - ${exp.isPresent ? 'Present' : format(exp.endDate)}</p>
+                    <ul>
+                      ${exp.details.map(detail => `<li>${detail}</li>`).join('')}
+                    </ul>
+                  </div>
+                `).join('')}
+              </div>
+
+              <div class="section">
+                <h2 class="section-title">Projects</h2>
+                ${data.projects.map(project => `
+                  <div class="project-item">
+                    <h3>${project.name}</h3>
+                    <p class="date">${format(project.durationStart)} - ${format(project.durationEnd)}</p>
+                    <p>${project.details}</p>
+                  </div>
+                `).join('')}
+              </div>
+            </div>
+          </div>
+        </div>
+      `
+    }
+  };
+
+  const handleChange = (e) => {
+    const { name, value } = e.target;
+    setFormData({ ...formData, [name]: value });
+  };
+
   const handleNestedChange = (field, index, subField, value) => {
     const newData = { ...formData };
     if (subField) {
@@ -353,47 +425,55 @@ function ResumeBuilder() {
     setFormData(newData);
   };
 
-  //handle education changes
   const handleEducationChange = (field, value) => {
     setFormData({
       ...formData,
-      education: {
-        ...formData.education,
-        [field]: value
-      }
+      education: { ...formData.education, [field]: value }
     });
   };
 
-  // date selector 
+  const addExperience = () => {
+    setFormData({
+      ...formData,
+      experience: [...formData.experience, { title: '', company: '', startDate: '', endDate: '', isPresent: false, details: [''] }]
+    });
+  };
+
+  const addSkill = () => {
+    setFormData({ ...formData, skills: [...formData.skills, ''] });
+  };
+
+  const addProject = () => {
+    setFormData({ ...formData, projects: [...formData.projects, { name: '', details: '', durationStart: '', durationEnd: '' }] });
+  };
+
+  const generateYearOptions = () => {
+    const currentYear = new Date().getFullYear();
+    const years = [];
+    for (let year = currentYear + 5; year >= 1950; year--) {
+      years.push(year);
+    }
+    return years;
+  };
+
+  const months = [
+    'January', 'February', 'March', 'April', 'May', 'June',
+    'July', 'August', 'September', 'October', 'November', 'December'
+  ];
+
   const DateSelector = ({ value, onChange, required, disabled, id }) => {
-    //years
     const years = generateYearOptions();
     const [year, month] = value ? value.split('-') : ['', ''];
     const monthIndex = month ? parseInt(month) - 1 : '';
 
-    //month
     const handleMonthChange = (selectedMonth) => {
-      const monthIndex = months.indexOf(selectedMonth);
-      const newMonth = (monthIndex + 1).toString().padStart(2, '0');
-      
-      // if year selected combine them
-      if (year) {
-        onChange({ target: { value: `${year}-${newMonth}` } });
-      } else {
-        // If no year selected, use current year
-        const currentYear = new Date().getFullYear();
-        onChange({ target: { value: `${currentYear}-${newMonth}` } });
-      }
+      const newMonthIndex = months.indexOf(selectedMonth);
+      const newMonth = (newMonthIndex + 1).toString().padStart(2, '0');
+      onChange({ target: { value: year ? `${year}-${newMonth}` : `${new Date().getFullYear()}-${newMonth}` } });
     };
 
-    // Handle year selection
     const handleYearChange = (selectedYear) => {
-      if (month) {
-        onChange({ target: { value: `${selectedYear}-${month}` } });
-      } else {
-        // If no month selected, use January as default
-        onChange({ target: { value: `${selectedYear}-01` } });
-      }
+      onChange({ target: { value: month ? `${selectedYear}-${month}` : `${selectedYear}-01` } });
     };
 
     return (
@@ -428,46 +508,9 @@ function ResumeBuilder() {
     );
   };
 
-  // Handle changes in form fields
-  const handleChange = (e) => {
-    const { name, value } = e.target;
-    setFormData({ ...formData, [name]: value });
-  };
-
-  //add new sections to the form
-  const addExperience = () => {
-    setFormData({
-      ...formData,
-      experience: [...formData.experience, { title: '', company: '', startDate: '', endDate: '', isPresent: false, details: [''] }],
-    });
-  };
-
-  const addSkill = () => {
-    setFormData({ ...formData, skills: [...formData.skills, ''] });
-  };
-
-  const addProject = () => {
-    setFormData({ ...formData, projects: [...formData.projects, { name: '', details: '', durationStart: '', durationEnd: '' }] });
-  };
-
-  const generateYearOptions = () => {
-    const currentYear = new Date().getFullYear();
-    const years = [];
-    for (let year = currentYear + 5; year >= 1950; year--) {
-      years.push(year);
-    }
-    return years;
-  };
-
-  const months = [
-    'January', 'February', 'March', 'April', 'May', 'June',
-    'July', 'August', 'September', 'October', 'November', 'December'
-  ];
-
-  //creates the final resume when the form is submitted
   const generateResume = (e) => {
     e.preventDefault();
-    const template = templateConfigs[formData.template];
+    const template = templates[formData.template];
     if (!template) {
       console.error(`Template ${formData.template} not found`);
       return;
@@ -475,24 +518,198 @@ function ResumeBuilder() {
     setPreview(template.render(formData, formatMonthYear));
   };
 
-  //Update the template selector options
-  const templates = Object.entries(templateConfigs).map(([value, config]) => ({
-    value,
-    label: config.label
-  }));
-
-  // Add the handleArrayChange function
-  const handleArrayChange = (e, field, index, subField = '') => {
-    const newData = { ...formData };
-    if (subField === 'details') {
-      // Split textarea input into array by newlines
-      newData[field][index][subField] = e.target.value.split('\n');
-    } else if (subField) {
-      newData[field][index][subField] = e.target.value;
-    } else {
-      newData[field][index] = e.target.value;
+  const downloadPDF = async () => {
+    if (!pdfMakeReady || !window.pdfMake) {
+      alert('PDF generator is not ready. Please try again.');
+      return;
     }
-    setFormData(newData);
+
+    try {
+      const docDefinition = {
+        pageSize: 'A4',
+        pageMargins: [40, 40, 40, 40],
+        content: [
+          // Header section
+          {
+            text: formData.name,
+            style: 'header'
+          },
+          {
+            text: formData.title,
+            style: 'subheader'
+          },
+          {
+            text: [
+              { text: 'Email: ', bold: true }, formData.email, ' | ',
+              { text: 'Phone: ', bold: true }, formData.phone, ' | ',
+              { text: 'LinkedIn: ', bold: true }, formData.linkedin, ' | ',
+              { text: 'GitHub: ', bold: true }, formData.github
+            ],
+            style: 'contact'
+          },
+          // Two-column layout
+          {
+            columns: [
+              // Left column (30%)
+              {
+                width: '30%',
+                stack: [
+                  {
+                    text: 'SKILLS',
+                    style: 'sectionHeader'
+                  },
+                  {
+                    ul: formData.skills.map(skill => 
+                      typeof skill === 'object' ? skill : skill
+                    )
+                  },
+                  {
+                    text: 'EDUCATION',
+                    style: 'sectionHeader',
+                    marginTop: 20
+                  },
+                  {
+                    text: formData.education.qualification,
+                    style: 'jobTitle'
+                  },
+                  {
+                    text: formData.education.institution,
+                    style: 'normal'
+                  },
+                  {
+                    text: `${formatMonthYear(formData.education.startDate)} - ${formData.education.isPresent ? 'Present' : formatMonthYear(formData.education.endDate)}`,
+                    style: 'date'
+                  }
+                ]
+              },
+              // Right column (70%)
+              {
+                width: '70%',
+                stack: [
+                  {
+                    text: 'PROFESSIONAL SUMMARY',
+                    style: 'sectionHeader'
+                  },
+                  {
+                    text: formData.about,
+                    style: 'normal'
+                  },
+                  {
+                    text: 'EXPERIENCE',
+                    style: 'sectionHeader',
+                    marginTop: 20
+                  },
+                  ...formData.experience.map(exp => ([
+                    {
+                      text: exp.title,
+                      style: 'jobTitle'
+                    },
+                    {
+                      text: exp.company,
+                      style: 'company'
+                    },
+                    {
+                      text: `${formatMonthYear(exp.startDate)} - ${exp.isPresent ? 'Present' : formatMonthYear(exp.endDate)}`,
+                      style: 'date'
+                    },
+                    {
+                      ul: exp.details.map(detail => 
+                        typeof detail === 'object' ? detail : detail
+                      )
+                    }
+                  ])).flat(),
+                  {
+                    text: 'PROJECTS',
+                    style: 'sectionHeader',
+                    marginTop: 20
+                  },
+                  ...formData.projects.map(project => ([
+                    {
+                      text: project.name,
+                      style: 'jobTitle'
+                    },
+                    {
+                      text: `${formatMonthYear(project.durationStart)} - ${formatMonthYear(project.durationEnd)}`,
+                      style: 'date'
+                    },
+                    {
+                      text: project.details,
+                      style: 'normal'
+                    }
+                  ])).flat()
+                ]
+              }
+            ]
+          }
+        ],
+        styles: {
+          header: {
+            fontSize: 28,
+            bold: true,
+            alignment: 'center',
+            margin: [0, 0, 0, 5]
+          },
+          subheader: {
+            fontSize: 18,
+            color: '#666666',
+            alignment: 'center',
+            margin: [0, 0, 0, 20]
+          },
+          contact: {
+            fontSize: 11,
+            alignment: 'center',
+            margin: [0, 0, 0, 30]
+          },
+          sectionHeader: {
+            fontSize: 16,
+            bold: true,
+            decoration: 'underline',
+            decorationStyle: 'solid',
+            decorationColor: '#3498db',
+            margin: [0, 20, 0, 10]
+          },
+          jobTitle: {
+            fontSize: 14,
+            bold: true,
+            margin: [0, 5, 0, 0]
+          },
+          company: {
+            fontSize: 12,
+            bold: true,
+            color: '#666666',
+            margin: [0, 2, 0, 2]
+          },
+          date: {
+            fontSize: 11,
+            italics: true,
+            color: '#666666',
+            margin: [0, 2, 0, 5]
+          },
+          normal: {
+            fontSize: 11,
+            margin: [0, 2, 0, 5]
+          },
+          bulletList: {
+            fontSize: 11,
+            margin: [0, 0, 0, 15]
+          },
+          skill: {
+            fontSize: 11,
+            margin: [0, 5, 0, 15]
+          }
+        },
+        defaultStyle: {
+          fontSize: 11,
+          lineHeight: 1.4,
+          color: '#333333'
+        }
+      };
+
+      window.pdfMake.createPdf(docDefinition).download(`${formData.name || 'resume'}.pdf`);
+    } catch (error) {
+      console.error('Error generating PDF:', error);
+      alert('Error generating PDF. Please check your input data and try again.');
+    }
   };
 
   return (
@@ -500,6 +717,7 @@ function ResumeBuilder() {
       <header className="header">
         <div className="header-content">
           <h1 onClick={() => navigate('/index')} style={{ cursor: 'pointer' }}>Career Catalyst</h1>
+          <img className="logo" src="logo512.png" alt="Logo" width="100" height="100" />
           <nav>
             <button onClick={() => navigate('/ats-checker')} className="button button-secondary">ATS Checker</button>
             <button onClick={() => navigate('/resume-builder')} className="button button-secondary">Resume Builder</button>
@@ -550,7 +768,6 @@ function ResumeBuilder() {
                 <option key={role} value={role}>{role}</option>
               ))}
             </select>
-            
             {isCustomTitle && (
               <input
                 type="text"
@@ -706,6 +923,7 @@ function ResumeBuilder() {
               </div>
             </div>
           </div>
+
           <div className="form-group">
             <label className="form-label">Skills:</label>
             {formData.skills.map((skill, index) => (
@@ -715,12 +933,13 @@ function ResumeBuilder() {
                 className="form-input mb-2" 
                 placeholder={`Skill ${index + 1}`} 
                 value={skill} 
-                onChange={(e) => handleArrayChange(e, 'skills', index)} 
+                onChange={(e) => handleNestedChange('skills', index, '', e.target.value)} 
                 required 
               />
             ))}
             <button type="button" onClick={addSkill} className="button">Add Skill</button>
           </div>
+
           <div className="form-group">
             <label className="form-label">Projects:</label>
             {formData.projects.map((project, index) => (
@@ -761,28 +980,35 @@ function ResumeBuilder() {
                   value={project.details} 
                   onChange={(e) => handleNestedChange('projects', index, 'details', e.target.value)} 
                   required 
-                ></textarea>
+                />
               </div>
             ))}
             <button type="button" onClick={addProject} className="button">Add Project</button>
           </div>
+
           <div className="form-group">
             <label htmlFor="template" className="form-label">Select Template:</label>
-            <select id="template" name="template" className="form-input" value={formData.template} onChange={handleChange}>
-              {templates.map(temp => (
-                <option key={temp.value} value={temp.value}>{temp.label}</option>
+            <select 
+              id="template" 
+              name="template" 
+              className="form-input" 
+              value={formData.template} 
+              onChange={handleChange}
+            >
+              {Object.entries(templates).map(([key, { label }]) => (
+                <option key={key} value={key}>{label}</option>
               ))}
             </select>
           </div>
+
           <button type="submit" className="button w-full">Generate Resume</button>
         </form>
 
         {preview && (
           <div className="resume-preview mt-6">
             <h2>Resume Preview</h2>
-            <div className="preview">
-              {preview}
-            </div>
+            <button onClick={downloadPDF} className="button mt-4" style={{ background: '#2ecc71' }}>Download as PDF</button>
+            <div ref={previewRef} dangerouslySetInnerHTML={{ __html: preview }} />
           </div>
         )}
       </main>
