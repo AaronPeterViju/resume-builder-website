@@ -1,6 +1,8 @@
 import React, { useState, useRef, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import '../styles.css';
+import pdfMake from 'pdfmake/build/pdfmake';
+import pdfFonts from 'pdfmake/build/vfs_fonts';
 
 function ResumeBuilder() {
   const navigate = useNavigate();
@@ -10,18 +12,33 @@ function ResumeBuilder() {
   useEffect(() => {
     const loadPdfMake = async () => {
       try {
-        const pdfMake = await import('pdfmake/build/pdfmake');
-        const pdfFonts = await import('pdfmake/build/vfs_fonts');
-        
-        // Initialize pdfMake with fonts
-        pdfMake.default.vfs = pdfFonts.pdfMake.vfs;
-        window.pdfMake = pdfMake.default;
-        
+        if (pdfMake.vfs) {
+          setPdfMakeReady(true);
+          return;
+        }
+
+        // Load from CDN if local import fails
+        await new Promise((resolve, reject) => {
+          const script = document.createElement('script');
+          script.src = 'https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.2.7/pdfmake.min.js';
+          script.onload = resolve;
+          script.onerror = reject;
+          document.head.appendChild(script);
+        });
+
+        await new Promise((resolve, reject) => {
+          const script = document.createElement('script');
+          script.src = 'https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.2.7/vfs_fonts.js';
+          script.onload = resolve;
+          script.onerror = reject;
+          document.head.appendChild(script);
+        });
+
         setPdfMakeReady(true);
-        console.log('PDF dependencies loaded successfully');
+        console.log('PDF dependencies loaded from CDN successfully');
       } catch (error) {
-        console.error('Error loading PDF dependencies:', error);
-        alert('Failed to load PDF generator. Please refresh the page and try again.');
+        console.error('Failed to load PDF dependencies:', error);
+        setPdfMakeReady(false);
       }
     };
 
@@ -519,7 +536,7 @@ function ResumeBuilder() {
   };
 
   const downloadPDF = async () => {
-    if (!pdfMakeReady || !window.pdfMake) {
+    if (!pdfMakeReady) {
       alert('PDF generator is not ready. Please try again.');
       return;
     }
@@ -529,7 +546,6 @@ function ResumeBuilder() {
         pageSize: 'A4',
         pageMargins: [40, 40, 40, 40],
         content: [
-          // Header section
           {
             text: formData.name,
             style: 'header'
@@ -541,16 +557,15 @@ function ResumeBuilder() {
           {
             text: [
               { text: 'Email: ', bold: true }, formData.email, ' | ',
-              { text: 'Phone: ', bold: true }, formData.phone, ' | ',
+              { text: 'Phone: ', bold: true }, formData.phone, '\n',
               { text: 'LinkedIn: ', bold: true }, formData.linkedin, ' | ',
               { text: 'GitHub: ', bold: true }, formData.github
             ],
             style: 'contact'
           },
-          // Two-column layout
           {
             columns: [
-              // Left column (30%)
+              // Left column
               {
                 width: '30%',
                 stack: [
@@ -559,9 +574,7 @@ function ResumeBuilder() {
                     style: 'sectionHeader'
                   },
                   {
-                    ul: formData.skills.map(skill => 
-                      typeof skill === 'object' ? skill : skill
-                    )
+                    ul: formData.skills.map(skill => skill)
                   },
                   {
                     text: 'EDUCATION',
@@ -582,7 +595,7 @@ function ResumeBuilder() {
                   }
                 ]
               },
-              // Right column (70%)
+              // Right column
               {
                 width: '70%',
                 stack: [
@@ -613,9 +626,7 @@ function ResumeBuilder() {
                       style: 'date'
                     },
                     {
-                      ul: exp.details.map(detail => 
-                        typeof detail === 'object' ? detail : detail
-                      )
+                      ul: exp.details
                     }
                   ])).flat(),
                   {
@@ -644,40 +655,38 @@ function ResumeBuilder() {
         ],
         styles: {
           header: {
-            fontSize: 28,
+            fontSize: 24,
             bold: true,
             alignment: 'center',
             margin: [0, 0, 0, 5]
           },
           subheader: {
-            fontSize: 18,
+            fontSize: 16,
+            alignment: 'center',
             color: '#666666',
+            margin: [0, 0, 0, 10]
+          },
+          contact: {
+            fontSize: 12,
             alignment: 'center',
             margin: [0, 0, 0, 20]
           },
-          contact: {
-            fontSize: 11,
-            alignment: 'center',
-            margin: [0, 0, 0, 30]
-          },
           sectionHeader: {
-            fontSize: 16,
-            bold: true,
-            decoration: 'underline',
-            decorationStyle: 'solid',
-            decorationColor: '#3498db',
-            margin: [0, 20, 0, 10]
-          },
-          jobTitle: {
             fontSize: 14,
             bold: true,
-            margin: [0, 5, 0, 0]
+            decoration: 'underline',
+            decorationColor: '#000000',
+            margin: [0, 15, 0, 10]
+          },
+          jobTitle: {
+            fontSize: 13,
+            bold: true,
+            margin: [0, 10, 0, 2]
           },
           company: {
             fontSize: 12,
             bold: true,
-            color: '#666666',
-            margin: [0, 2, 0, 2]
+            color: '#666666'
           },
           date: {
             fontSize: 11,
@@ -688,27 +697,15 @@ function ResumeBuilder() {
           normal: {
             fontSize: 11,
             margin: [0, 2, 0, 5]
-          },
-          bulletList: {
-            fontSize: 11,
-            margin: [0, 0, 0, 15]
-          },
-          skill: {
-            fontSize: 11,
-            margin: [0, 5, 0, 15]
           }
-        },
-        defaultStyle: {
-          fontSize: 11,
-          lineHeight: 1.4,
-          color: '#333333'
         }
       };
 
-      window.pdfMake.createPdf(docDefinition).download(`${formData.name || 'resume'}.pdf`);
+      const fileName = `${formData.name.replace(/\s+/g, '_')}_resume.pdf`;
+      pdfMake.createPdf(docDefinition).download(fileName);
     } catch (error) {
       console.error('Error generating PDF:', error);
-      alert('Error generating PDF. Please check your input data and try again.');
+      alert('Error generating PDF. Please try again.');
     }
   };
 
