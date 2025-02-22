@@ -2,7 +2,7 @@ import React, { useState, useRef, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import '../styles.css';
 
-// Template styles and colors
+// Template styles
 const templateConfig = {
   colors: {
     primary: '#2c3e50',
@@ -17,7 +17,7 @@ const templateConfig = {
   }
 };
 
-// Form field definitions
+// Form definitions
 const formFields = [
   { name: 'name', label: 'Name', type: 'text' },
   { name: 'email', label: 'Email', type: 'email' },
@@ -27,7 +27,7 @@ const formFields = [
   { name: 'about', label: 'About Me', type: 'textarea' }
 ];
 
-// Initial form state
+//init form state
 const initialFormState = {
   name: '', title: '', email: '', phone: '', linkedin: '', github: '', about: '',
   experience: [{ title: '', company: '', startDate: '', endDate: '', isPresent: false, details: [''] }],
@@ -45,21 +45,32 @@ function ResumeBuilder() {
   const [preview, setPreview] = useState('');
   const [isCustomTitle, setIsCustomTitle] = useState(false);
 
-  // Load PDF dependencies
+  // sets up the pdfmake library
   useEffect(() => {
-    const loadPdfMake = async () => {
+    const initializePdfMake = async () => {
       try {
-        const pdfMake = await import('pdfmake/build/pdfmake');
-        const pdfFonts = await import('pdfmake/build/vfs_fonts');
-        pdfMake.default.vfs = pdfFonts.pdfMake.vfs;
-        window.pdfMake = pdfMake.default;
+        //loads library and fonts
+        const pdfMake = require('pdfmake/build/pdfmake');
+        const pdfFonts = require('pdfmake/build/vfs_fonts');
+        
+        // Set up the fonts available in our PDF
+        if (pdfFonts && pdfFonts.pdfMake) {
+          pdfMake.vfs = pdfFonts.pdfMake.vfs;
+        }
+        
+        // Make the PDF generator available throughout the application
+        window.pdfMake = pdfMake;
+        // Mark that our PDF generator is ready to use
         setPdfMakeReady(true);
       } catch (error) {
-        console.error('Error loading PDF dependencies:', error);
-        alert('Failed to load PDF generator. Please refresh the page.');
+        // If something goes wrong with pdfmake
+        console.error('Error initializing PDF generator:', error);
+        alert('Failed to initialize PDF generator. Please refresh the page.');
       }
     };
-    loadPdfMake();
+
+    // Start the initialization
+    initializePdfMake();
   }, []);
 
   // Form handlers
@@ -99,7 +110,7 @@ function ResumeBuilder() {
     setPreview(selectedTemplate.render(formData, formatMonthYear));
   };
 
-  // Define formatMonthYear function
+  // Define formatMonthYear
   const formatMonthYear = (value) => value ? new Date(value).toLocaleString('default', { month: 'long', year: 'numeric' }) : 'Present';
 
   const commonRoles = [
@@ -514,13 +525,16 @@ function ResumeBuilder() {
     );
   };
 
+  // When the user wants to download their resume as a PDF
   const downloadPDF = async () => {
+    // Check if our PDF generator is ready to use
     if (!pdfMakeReady || !window.pdfMake) {
       alert('PDF generator is not ready. Please try again.');
       return;
     }
 
     try {
+      // Create the PDF document with all the resume information
       const docDefinition = {
         pageSize: 'A4',
         pageMargins: [40, 40, 40, 40],
@@ -701,8 +715,10 @@ function ResumeBuilder() {
         }
       };
 
+      // Generate and download the PDF with the user name
       window.pdfMake.createPdf(docDefinition).download(`${formData.name || 'resume'}.pdf`);
     } catch (error) {
+      // If something goes wrong 
       console.error('Error generating PDF:', error);
       alert('Error generating PDF. Please check your input data and try again.');
     }
