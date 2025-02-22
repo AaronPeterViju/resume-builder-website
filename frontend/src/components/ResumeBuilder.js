@@ -1,68 +1,103 @@
 import React, { useState, useRef, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import '../styles.css';
-import pdfMake from 'pdfmake/build/pdfmake';
-import pdfFonts from 'pdfmake/build/vfs_fonts';
+
+// Template styles and colors
+const templateConfig = {
+  colors: {
+    primary: '#2c3e50',
+    secondary: '#7f8c8d',
+    accent: '#3498db',
+    text: '#333333',
+    background: '#f8f9fa'
+  },
+  fonts: {
+    primary: 'Arial, sans-serif',
+    sizes: { h1: '32px', h2: '18px', body: '14px' }
+  }
+};
+
+// Form field definitions
+const formFields = [
+  { name: 'name', label: 'Name', type: 'text' },
+  { name: 'email', label: 'Email', type: 'email' },
+  { name: 'phone', label: 'Phone', type: 'tel' },
+  { name: 'linkedin', label: 'LinkedIn', type: 'url' },
+  { name: 'github', label: 'GitHub', type: 'url' },
+  { name: 'about', label: 'About Me', type: 'textarea' }
+];
+
+// Initial form state
+const initialFormState = {
+  name: '', title: '', email: '', phone: '', linkedin: '', github: '', about: '',
+  experience: [{ title: '', company: '', startDate: '', endDate: '', isPresent: false, details: [''] }],
+  education: { qualification: '', institution: '', startDate: '', endDate: '', isPresent: false },
+  skills: [''],
+  projects: [{ name: '', details: '', durationStart: '', durationEnd: '' }],
+  template: 'template1'
+};
 
 function ResumeBuilder() {
   const navigate = useNavigate();
   const previewRef = useRef(null);
   const [pdfMakeReady, setPdfMakeReady] = useState(false);
+  const [formData, setFormData] = useState(initialFormState);
+  const [preview, setPreview] = useState('');
+  const [isCustomTitle, setIsCustomTitle] = useState(false);
 
+  // Load PDF dependencies
   useEffect(() => {
     const loadPdfMake = async () => {
       try {
-        if (pdfMake.vfs) {
-          setPdfMakeReady(true);
-          return;
-        }
-
-        // Load from CDN if local import fails
-        await new Promise((resolve, reject) => {
-          const script = document.createElement('script');
-          script.src = 'https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.2.7/pdfmake.min.js';
-          script.onload = resolve;
-          script.onerror = reject;
-          document.head.appendChild(script);
-        });
-
-        await new Promise((resolve, reject) => {
-          const script = document.createElement('script');
-          script.src = 'https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.2.7/vfs_fonts.js';
-          script.onload = resolve;
-          script.onerror = reject;
-          document.head.appendChild(script);
-        });
-
+        const pdfMake = await import('pdfmake/build/pdfmake');
+        const pdfFonts = await import('pdfmake/build/vfs_fonts');
+        pdfMake.default.vfs = pdfFonts.pdfMake.vfs;
+        window.pdfMake = pdfMake.default;
         setPdfMakeReady(true);
-        console.log('PDF dependencies loaded from CDN successfully');
       } catch (error) {
-        console.error('Failed to load PDF dependencies:', error);
-        setPdfMakeReady(false);
+        console.error('Error loading PDF dependencies:', error);
+        alert('Failed to load PDF generator. Please refresh the page.');
       }
     };
-
     loadPdfMake();
   }, []);
 
-  // Define formData state
-  const [formData, setFormData] = useState({
-    name: '',
-    title: '',
-    email: '',
-    phone: '',
-    linkedin: '',
-    github: '',
-    about: '',
-    experience: [{ title: '', company: '', startDate: '', endDate: '', isPresent: false, details: [''] }],
-    education: { qualification: '', institution: '', startDate: '', endDate: '', isPresent: false },
-    skills: [''],
-    projects: [{ name: '', details: '', durationStart: '', durationEnd: '' }],
-    template: 'template1',
-  });
+  // Form handlers
+  const handleChange = (e) => {
+    const { name, value } = e.target;
+    setFormData(prev => ({ ...prev, [name]: value }));
+  };
 
-  const [preview, setPreview] = useState('');
-  const [isCustomTitle, setIsCustomTitle] = useState(false);
+  const handleNestedChange = (section, index, field, value) => {
+    setFormData(prev => {
+      const newData = { ...prev };
+      if (field) {
+        newData[section][index][field] = value;
+      } else {
+        newData[section][index] = value;
+      }
+      return newData;
+    });
+  };
+
+  // Add/remove form sections
+  const addExperience = () => setFormData(prev => ({
+    ...prev,
+    experience: [...prev.experience, { title: '', company: '', startDate: '', endDate: '', isPresent: false, details: [''] }]
+  }));
+
+  const addSkill = () => setFormData(prev => ({ ...prev, skills: [...prev.skills, ''] }));
+  const addProject = () => setFormData(prev => ({
+    ...prev,
+    projects: [...prev.projects, { name: '', details: '', durationStart: '', durationEnd: '' }]
+  }));
+
+  // Form submission
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    const selectedTemplate = templates[formData.template];
+    setPreview(selectedTemplate.render(formData, formatMonthYear));
+  };
 
   // Define formatMonthYear function
   const formatMonthYear = (value) => value ? new Date(value).toLocaleString('default', { month: 'long', year: 'numeric' }) : 'Present';
@@ -74,15 +109,6 @@ function ResumeBuilder() {
     'Project Manager',
     'Software Tester',
     'Other'
-  ];
-
-  const formFields = [
-    { name: 'name', label: 'Name', type: 'text' },
-    { name: 'email', label: 'Email', type: 'email' },
-    { name: 'phone', label: 'Phone', type: 'tel' },
-    { name: 'linkedin', label: 'LinkedIn', type: 'url' },
-    { name: 'github', label: 'GitHub', type: 'url' },
-    { name: 'about', label: 'About Me', type: 'textarea' }
   ];
 
   const templates = {
@@ -427,43 +453,6 @@ function ResumeBuilder() {
     }
   };
 
-  const handleChange = (e) => {
-    const { name, value } = e.target;
-    setFormData({ ...formData, [name]: value });
-  };
-
-  const handleNestedChange = (field, index, subField, value) => {
-    const newData = { ...formData };
-    if (subField) {
-      newData[field][index][subField] = value;
-    } else {
-      newData[field][index] = value;
-    }
-    setFormData(newData);
-  };
-
-  const handleEducationChange = (field, value) => {
-    setFormData({
-      ...formData,
-      education: { ...formData.education, [field]: value }
-    });
-  };
-
-  const addExperience = () => {
-    setFormData({
-      ...formData,
-      experience: [...formData.experience, { title: '', company: '', startDate: '', endDate: '', isPresent: false, details: [''] }]
-    });
-  };
-
-  const addSkill = () => {
-    setFormData({ ...formData, skills: [...formData.skills, ''] });
-  };
-
-  const addProject = () => {
-    setFormData({ ...formData, projects: [...formData.projects, { name: '', details: '', durationStart: '', durationEnd: '' }] });
-  };
-
   const generateYearOptions = () => {
     const currentYear = new Date().getFullYear();
     const years = [];
@@ -525,18 +514,8 @@ function ResumeBuilder() {
     );
   };
 
-  const generateResume = (e) => {
-    e.preventDefault();
-    const template = templates[formData.template];
-    if (!template) {
-      console.error(`Template ${formData.template} not found`);
-      return;
-    }
-    setPreview(template.render(formData, formatMonthYear));
-  };
-
   const downloadPDF = async () => {
-    if (!pdfMakeReady) {
+    if (!pdfMakeReady || !window.pdfMake) {
       alert('PDF generator is not ready. Please try again.');
       return;
     }
@@ -546,6 +525,7 @@ function ResumeBuilder() {
         pageSize: 'A4',
         pageMargins: [40, 40, 40, 40],
         content: [
+          // Header section
           {
             text: formData.name,
             style: 'header'
@@ -557,15 +537,16 @@ function ResumeBuilder() {
           {
             text: [
               { text: 'Email: ', bold: true }, formData.email, ' | ',
-              { text: 'Phone: ', bold: true }, formData.phone, '\n',
+              { text: 'Phone: ', bold: true }, formData.phone, ' | ',
               { text: 'LinkedIn: ', bold: true }, formData.linkedin, ' | ',
               { text: 'GitHub: ', bold: true }, formData.github
             ],
             style: 'contact'
           },
+          // Two-column layout
           {
             columns: [
-              // Left column
+              // Left column (30%)
               {
                 width: '30%',
                 stack: [
@@ -574,7 +555,9 @@ function ResumeBuilder() {
                     style: 'sectionHeader'
                   },
                   {
-                    ul: formData.skills.map(skill => skill)
+                    ul: formData.skills.map(skill => 
+                      typeof skill === 'object' ? skill : skill
+                    )
                   },
                   {
                     text: 'EDUCATION',
@@ -595,7 +578,7 @@ function ResumeBuilder() {
                   }
                 ]
               },
-              // Right column
+              // Right column (70%)
               {
                 width: '70%',
                 stack: [
@@ -626,7 +609,9 @@ function ResumeBuilder() {
                       style: 'date'
                     },
                     {
-                      ul: exp.details
+                      ul: exp.details.map(detail => 
+                        typeof detail === 'object' ? detail : detail
+                      )
                     }
                   ])).flat(),
                   {
@@ -655,38 +640,40 @@ function ResumeBuilder() {
         ],
         styles: {
           header: {
-            fontSize: 24,
+            fontSize: 28,
             bold: true,
             alignment: 'center',
             margin: [0, 0, 0, 5]
           },
           subheader: {
-            fontSize: 16,
-            alignment: 'center',
+            fontSize: 18,
             color: '#666666',
-            margin: [0, 0, 0, 10]
-          },
-          contact: {
-            fontSize: 12,
             alignment: 'center',
             margin: [0, 0, 0, 20]
           },
+          contact: {
+            fontSize: 11,
+            alignment: 'center',
+            margin: [0, 0, 0, 30]
+          },
           sectionHeader: {
-            fontSize: 14,
+            fontSize: 16,
             bold: true,
             decoration: 'underline',
-            decorationColor: '#000000',
-            margin: [0, 15, 0, 10]
+            decorationStyle: 'solid',
+            decorationColor: '#3498db',
+            margin: [0, 20, 0, 10]
           },
           jobTitle: {
-            fontSize: 13,
+            fontSize: 14,
             bold: true,
-            margin: [0, 10, 0, 2]
+            margin: [0, 5, 0, 0]
           },
           company: {
             fontSize: 12,
             bold: true,
-            color: '#666666'
+            color: '#666666',
+            margin: [0, 2, 0, 2]
           },
           date: {
             fontSize: 11,
@@ -697,15 +684,27 @@ function ResumeBuilder() {
           normal: {
             fontSize: 11,
             margin: [0, 2, 0, 5]
+          },
+          bulletList: {
+            fontSize: 11,
+            margin: [0, 0, 0, 15]
+          },
+          skill: {
+            fontSize: 11,
+            margin: [0, 5, 0, 15]
           }
+        },
+        defaultStyle: {
+          fontSize: 11,
+          lineHeight: 1.4,
+          color: '#333333'
         }
       };
 
-      const fileName = `${formData.name.replace(/\s+/g, '_')}_resume.pdf`;
-      pdfMake.createPdf(docDefinition).download(fileName);
+      window.pdfMake.createPdf(docDefinition).download(`${formData.name || 'resume'}.pdf`);
     } catch (error) {
       console.error('Error generating PDF:', error);
-      alert('Error generating PDF. Please try again.');
+      alert('Error generating PDF. Please check your input data and try again.');
     }
   };
 
@@ -741,7 +740,7 @@ function ResumeBuilder() {
       </section>
 
       <main className="container">
-        <form onSubmit={generateResume} className="form">
+        <form onSubmit={handleSubmit} className="form">
           <div className="form-group">
             <label htmlFor="title" className="form-label">Title/Role:</label>
             <select
@@ -875,7 +874,7 @@ function ResumeBuilder() {
               className="form-input mb-2" 
               placeholder="Qualification" 
               value={formData.education.qualification} 
-              onChange={(e) => handleEducationChange('qualification', e.target.value)} 
+              onChange={(e) => handleNestedChange('education', 'qualification', '', e.target.value)} 
               required 
             />
             <input 
@@ -885,7 +884,7 @@ function ResumeBuilder() {
               className="form-input mb-2" 
               placeholder="Institution" 
               value={formData.education.institution} 
-              onChange={(e) => handleEducationChange('institution', e.target.value)} 
+              onChange={(e) => handleNestedChange('education', 'institution', '', e.target.value)} 
               required 
             />
             <div style={{ display: 'flex', gap: '10px', alignItems: 'flex-end' }}>
@@ -894,7 +893,7 @@ function ResumeBuilder() {
                 <DateSelector
                   id="education-start"
                   value={formData.education.startDate}
-                  onChange={(e) => handleEducationChange('startDate', e.target.value)}
+                  onChange={(e) => handleNestedChange('education', 'startDate', '', e.target.value)}
                   required
                 />
               </div>
@@ -904,7 +903,7 @@ function ResumeBuilder() {
                   <DateSelector
                     id="education-end"
                     value={formData.education.endDate}
-                    onChange={(e) => handleEducationChange('endDate', e.target.value)}
+                    onChange={(e) => handleNestedChange('education', 'endDate', '', e.target.value)}
                     required={!formData.education.isPresent}
                     disabled={formData.education.isPresent}
                   />
@@ -912,7 +911,7 @@ function ResumeBuilder() {
                     <input
                       type="checkbox"
                       checked={formData.education.isPresent}
-                      onChange={(e) => handleEducationChange('isPresent', e.target.checked)}
+                      onChange={(e) => handleNestedChange('education', 'isPresent', '', e.target.checked)}
                     />
                     Present
                   </label>
