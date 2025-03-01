@@ -6,7 +6,8 @@ import { template2 } from './resume/templates/template2';
 import { template3 } from './resume/templates/template3';
 import { generatePDF } from './resume/pdfGenerator';
 import { formatMonthYear, loadPdfMake } from './resume/utils';
-import '../styles.css';
+import '../style.css';
+import { FaDownload, FaBriefcase, FaGraduationCap, FaTools, FaFileAlt, FaPlus, FaTrash, FaSignOutAlt } from 'react-icons/fa';
 
 // Define templates object using imported templates
 const templates = {
@@ -18,10 +19,13 @@ const templates = {
 function ResumeBuilder() {
   const navigate = useNavigate();
   const previewRef = useRef(null);
+  const formRef = useRef(null);
   const [pdfMakeReady, setPdfMakeReady] = useState(false);
   const [formData, setFormData] = useState(initialFormState);
   const [preview, setPreview] = useState('');
   const [isCustomTitle, setIsCustomTitle] = useState(false);
+  const [activeSection, setActiveSection] = useState('personal');
+  const [isGeneratingPDF, setIsGeneratingPDF] = useState(false);
 
   useEffect(() => {
     loadPdfMake().then(setPdfMakeReady);
@@ -52,6 +56,7 @@ function ResumeBuilder() {
   }));
 
   const addSkill = () => setFormData(prev => ({ ...prev, skills: [...prev.skills, ''] }));
+  
   const addProject = () => setFormData(prev => ({
     ...prev,
     projects: [...prev.projects, { name: '', details: '', durationStart: '', durationEnd: '' }]
@@ -60,13 +65,31 @@ function ResumeBuilder() {
   // Form submission
   const handleSubmit = (e) => {
     e.preventDefault();
-    const selectedTemplate = templates[formData.template];
-    setPreview(selectedTemplate.render(formData, formatMonthYear));
+    try {
+      const selectedTemplate = templates[formData.template];
+      if (!selectedTemplate || !selectedTemplate.render) {
+        console.error('Template not found or missing render method:', formData.template);
+        alert('Error: Selected template is not available. Please choose a different template.');
+        return;
+      }
+      const renderedHtml = selectedTemplate.render(formData, formatMonthYear);
+      setPreview(renderedHtml);
+      
+      // Scroll to preview section
+      setTimeout(() => {
+        if (previewRef.current) {
+          previewRef.current.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        }
+      }, 100);
+    } catch (error) {
+      console.error('Error generating preview:', error);
+      alert('Error generating resume preview. Please try again.');
+    }
   };
 
-  // Define formatMonthYear function
-  const formatMonthYear = (value) => value ? new Date(value).toLocaleString('default', { month: 'long', year: 'numeric' }) : 'Present';
-
+  // Date selection components
+  const formatMonthYearDisplay = (value) => value ? new Date(value).toLocaleString('default', { month: 'long', year: 'numeric' }) : 'Present';
+  
   const commonRoles = [
     'Software Engineer',
     'Product Manager',
@@ -106,14 +129,14 @@ function ResumeBuilder() {
     };
 
     return (
-      <div style={{ display: 'flex', gap: '10px' }}>
+      <div className="date-selector">
         <select
           value={monthIndex !== '' ? months[monthIndex] : ''}
           onChange={(e) => handleMonthChange(e.target.value)}
           required={required}
           disabled={disabled}
           id={`${id}-month`}
-          className="form-input"
+          className="form-input date-input"
         >
           <option value="">Month</option>
           {months.map((month) => (
@@ -126,7 +149,7 @@ function ResumeBuilder() {
           required={required}
           disabled={disabled}
           id={`${id}-year`}
-          className="form-input"
+          className="form-input date-input"
         >
           <option value="">Year</option>
           {years.map(year => (
@@ -139,6 +162,8 @@ function ResumeBuilder() {
 
   const downloadPDF = async () => {
     try {
+      setIsGeneratingPDF(true);
+      
       if (!pdfMakeReady) {
         // Try loading pdfMake again if not ready
         await loadPdfMake();
@@ -150,21 +175,36 @@ function ResumeBuilder() {
     } catch (error) {
       console.error('Error generating PDF:', error);
       alert('Error generating PDF. Please try again in a few moments.');
+    } finally {
+      setIsGeneratingPDF(false);
     }
   };
 
-  // Add loading indicator for PDF generation
-  const [isGeneratingPDF, setIsGeneratingPDF] = useState(false);
+  const SectionHeader = ({ title, id }) => (
+    <div 
+      className={`section-header ${activeSection === id ? 'active' : ''}`}
+      onClick={() => setActiveSection(id)}
+    >
+      <h2>{title}</h2>
+    </div>
+  );
 
   return (
-    <div>
+    <div className="home-page">
+      {/* Animated background with gradients */}
+      <div className="animated-background">
+        <div className="gradient-sphere gradient-1"></div>
+        <div className="gradient-sphere gradient-2"></div>
+        <div className="gradient-sphere gradient-3"></div>
+      </div>
+      
       <header className="header">
         <div className="header-content">
           <h1 onClick={() => navigate('/index')} style={{ cursor: 'pointer' }}>Career Catalyst</h1>
           <img className="logo" src="logo512.png" alt="Logo" width="100" height="100" />
           <nav>
-            <button onClick={() => navigate('/ats-checker')} className="button button-secondary">ATS Checker</button>
-            <button onClick={() => navigate('/resume-builder')} className="button button-secondary">Resume Builder</button>
+            <button onClick={() => navigate('/ats-checker')} className="modern-button secondary">ATS Checker</button>
+            <button onClick={() => navigate('/resume-builder')} className="modern-button secondary">Resume Builder</button>
             <button 
               onClick={() => {
                 localStorage.removeItem('authenticated');
@@ -172,305 +212,537 @@ function ResumeBuilder() {
                 localStorage.removeItem('userId');
                 navigate('/login');
               }}
-              className="button button-secondary"
+              className="modern-button secondary"
             >
-              Logout
+              <FaSignOutAlt /> Logout
             </button>
           </nav>
         </div>
       </header>
 
-      <section className="hero">
+      <section className="hero-section">
         <div className="container">
-          <h1>Resume Builder</h1>
-          <p>Create a professional resume with our easy-to-use builder.</p>
+          <h1 className="hero-title">Resume Builder</h1>
+          <p className="hero-subtitle">Create a professional resume with our easy-to-use builder.</p>
         </div>
       </section>
 
-      <main className="container">
-        <form onSubmit={handleSubmit} className="form">
-          <div className="form-group">
-            <label htmlFor="title" className="form-label">Title/Role:</label>
-            <select
-              id="title"
-              name="title"
-              className="form-input"
-              value={isCustomTitle ? 'Other' : formData.title}
-              onChange={(e) => {
-                if (e.target.value === 'Other') {
-                  setIsCustomTitle(true);
-                  setFormData({ ...formData, title: '' });
-                } else {
-                  setIsCustomTitle(false);
-                  setFormData({ ...formData, title: e.target.value });
-                }
-              }}
-              required
-            >
-              <option value="">Select a role</option>
-              {commonRoles.map(role => (
-                <option key={role} value={role}>{role}</option>
-              ))}
-            </select>
-            {isCustomTitle && (
-              <input
-                type="text"
-                className="form-input mt-2"
-                placeholder="Enter your custom title"
-                value={formData.title}
-                onChange={(e) => setFormData({ ...formData, title: e.target.value })}
-                required
-              />
+      <div className="content-wrapper">
+        <main className="container builder-container">
+          <div className="builder-layout">
+            <form ref={formRef} onSubmit={handleSubmit} className="form">
+              {/* Personal Information Section */}
+              <div className={`form-section ${activeSection === 'personal' ? 'active' : ''}`}>
+                <SectionHeader 
+                  title="Personal Information" 
+                  id="personal" 
+                />
+                
+                <div className="section-content">
+                  <div className="content-card">
+                    <div className="card-header">
+                      <h3>Basic Details</h3>
+                    </div>
+                    
+                    <div className="card-content">
+                      <div className="form-group">
+                        <label htmlFor="title" className="form-label">Title/Role:</label>
+                        <select
+                          id="title"
+                          name="title"
+                          className="form-input enhanced-select"
+                          value={isCustomTitle ? 'Other' : formData.title}
+                          onChange={(e) => {
+                            if (e.target.value === 'Other') {
+                              setIsCustomTitle(true);
+                              setFormData({ ...formData, title: '' });
+                            } else {
+                              setIsCustomTitle(false);
+                              setFormData({ ...formData, title: e.target.value });
+                            }
+                          }}
+                          required
+                        >
+                          <option value="">Select a role</option>
+                          {commonRoles.map(role => (
+                            <option key={role} value={role}>{role}</option>
+                          ))}
+                        </select>
+                        {isCustomTitle && (
+                          <input
+                            type="text"
+                            className="form-input"
+                            style={{ marginTop: "20px" }} // Increased space between dropdown and input
+                            placeholder="Enter your custom title"
+                            value={formData.title}
+                            onChange={(e) => setFormData({ ...formData, title: e.target.value })}
+                            required
+                          />
+                        )}
+                      </div>
+
+                      {formFields.map(({ name, label, type }) => (
+                        <div key={name} className="form-group">
+                          <label htmlFor={name} className="form-label">{label}:</label>
+                          {type === 'textarea' ? (
+                            <textarea
+                              id={name}
+                              name={name}
+                              className="form-input enhanced-textarea"
+                              value={formData[name]}
+                              onChange={handleChange}
+                              required
+                            />
+                          ) : (
+                            <input
+                              type={type}
+                              id={name}
+                              name={name}
+                              className="form-input enhanced-input"
+                              value={formData[name]}
+                              onChange={handleChange}
+                              required
+                            />
+                          )}
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              {/* Experience Section */}
+              <div className={`form-section ${activeSection === 'experience' ? 'active' : ''}`}>
+                <SectionHeader 
+                  title="Work Experience" 
+                  id="experience" 
+                />
+                
+                <div className="section-content">
+                  {formData.experience.map((exp, index) => (
+                    <div key={index} className="content-card experience-card">
+                      <div className="card-header">
+                        <h3>Position {index + 1}</h3>
+                        {index > 0 && (
+                          <button 
+                            type="button"
+                            className="modern-button danger"
+                            onClick={() => setFormData(prev => ({
+                              ...prev,
+                              experience: prev.experience.filter((_, i) => i !== index)
+                            }))}
+                          >
+                            <FaTrash /> Remove
+                          </button>
+                        )}
+                      </div>
+                      
+                      <div className="card-content">
+                        <div className="form-group">
+                          <label className="form-label">Job Title:</label>
+                          <input 
+                            type="text" 
+                            placeholder="e.g. Senior Developer" 
+                            className="form-input enhanced-input" 
+                            value={exp.title} 
+                            onChange={(e) => handleNestedChange('experience', index, 'title', e.target.value)} 
+                            required 
+                          />
+                        </div>
+                        
+                        <div className="form-group">
+                          <label className="form-label">Company:</label>
+                          <input 
+                            type="text" 
+                            placeholder="e.g. Google Inc." 
+                            className="form-input enhanced-input" 
+                            value={exp.company} 
+                            onChange={(e) => handleNestedChange('experience', index, 'company', e.target.value)} 
+                            required 
+                          />
+                        </div>
+                        
+                        <div className="form-row">
+                          <div className="form-group half">
+                            <label className="form-label">Start Date:</label>
+                            <DateSelector
+                              id={`exp-start-${index}`}
+                              value={exp.startDate}
+                              onChange={(e) => handleNestedChange('experience', index, 'startDate', e.target.value)}
+                              required
+                            />
+                          </div>
+                          
+                          <div className="form-group half">
+                            <div className="form-group" style={{marginBottom: "10px"}}>
+                              <label className="present-checkbox">
+                                <input
+                                  type="checkbox"
+                                  checked={exp.isPresent}
+                                  onChange={(e) => handleNestedChange('experience', index, 'isPresent', e.target.checked)}
+                                />
+                                <span>Present</span>
+                              </label>
+                            </div>
+                            
+                            <label className="form-label">End Date:</label>
+                            <DateSelector
+                              id={`exp-end-${index}`}
+                              value={exp.endDate}
+                              onChange={(e) => handleNestedChange('experience', index, 'endDate', e.target.value)}
+                              required={!exp.isPresent}
+                              disabled={exp.isPresent}
+                            />
+                          </div>
+                        </div>
+                        
+                        <div className="form-group">
+                          <label className="form-label">Responsibilities & Achievements:</label>
+                          <textarea 
+                            placeholder="• Developed a feature that increased users&#10;• Led a team of 5 developers for a major project&#10;• Optimized database queries" 
+                            className="form-input enhanced-textarea" 
+                            value={exp.details.join('\n')} 
+                            onChange={(e) => handleNestedChange('experience', index, 'details', e.target.value.split('\n'))} 
+                            required 
+                            rows={5}
+                          />
+                          <small className="input-help">Each bullet point on a new line</small>
+                        </div>
+                      </div>
+                    </div>
+                  ))}
+                  
+                  <button type="button" onClick={addExperience} className="modern-button ghost">
+                    <FaPlus /> Add Experience
+                  </button>
+                </div>
+              </div>
+
+              {/* Education Section */}
+              <div className={`form-section ${activeSection === 'education' ? 'active' : ''}`}>
+                <SectionHeader 
+                  title="Education" 
+                  id="education" 
+                />
+                
+                <div className="section-content">
+                  <div className="content-card">
+                    <div className="card-header">
+                      <h3>Education Details</h3>
+                    </div>
+                    
+                    <div className="card-content">
+                      <div className="form-group">
+                        <label className="form-label">Qualification/Degree:</label>
+                        <input 
+                          type="text" 
+                          placeholder="e.g. Bachelor of Science in Computer Science" 
+                          className="form-input enhanced-input" 
+                          value={formData.education.qualification || ''} 
+                          onChange={(e) => handleNestedChange('education', 'qualification', '', e.target.value)} 
+                          required 
+                        />
+                      </div>
+                      
+                      <div className="form-group">
+                        <label className="form-label">Institution:</label>
+                        <input 
+                          type="text" 
+                          placeholder="e.g. University of Technology" 
+                          className="form-input enhanced-input" 
+                          value={formData.education.institution || ''} 
+                          onChange={(e) => handleNestedChange('education', 'institution', '', e.target.value)} 
+                          required 
+                        />
+                      </div>
+                      
+                      <div className="form-row">
+                        <div className="form-group half">
+                          <label className="form-label">Start Date:</label>
+                          <DateSelector
+                            id="edu-start"
+                            value={formData.education.startDate}
+                            onChange={(e) => handleNestedChange('education', 'startDate', '', e.target.value)}
+                            required
+                          />
+                        </div>
+                        
+                        <div className="form-group half">
+                          <div className="form-group" style={{marginBottom: "10px"}}>
+                            <label className="present-checkbox">
+                              <input
+                                type="checkbox"
+                                checked={formData.education.isPresent || false}
+                                onChange={(e) => handleNestedChange('education', 'isPresent', '', e.target.checked)}
+                              />
+                              <span>Present</span>
+                            </label>
+                          </div>
+                          
+                          <label className="form-label">End Date:</label>
+                          <DateSelector
+                            id="edu-end"
+                            value={formData.education.endDate}
+                            onChange={(e) => handleNestedChange('education', 'endDate', '', e.target.value)}
+                            required={!formData.education.isPresent}
+                            disabled={formData.education.isPresent}
+                          />
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              {/* Skills Section */}
+              <div className={`form-section ${activeSection === 'skills' ? 'active' : ''}`}>
+                <SectionHeader 
+                  title="Skills" 
+                  id="skills" 
+                />
+                
+                <div className="section-content">
+                  <div className="content-card">
+                    <div className="card-header">
+                      <h3>Professional Skills</h3>
+                    </div>
+                    
+                    <div className="card-content">
+                      <div className="skills-container">
+                        {formData.skills.map((skill, index) => (
+                          <div key={index} className="skill-item">
+                            <input 
+                              type="text" 
+                              placeholder={`e.g. JavaScript, Team Leadership, Project Management`} 
+                              className="form-input enhanced-input" 
+                              value={skill} 
+                              onChange={(e) => handleNestedChange('skills', index, '', e.target.value)} 
+                              required 
+                            />
+                            {index > 0 && (
+                              <button 
+                                type="button"
+                                className="modern-button danger modern-skill-remove"
+                                onClick={() => setFormData(prev => ({
+                                  ...prev,
+                                  skills: prev.skills.filter((_, i) => i !== index)
+                                }))}
+                              >
+                                ×
+                              </button>
+                            )}
+                          </div>
+                        ))}
+                        <button type="button" onClick={addSkill} className="modern-button ghost skill-add">
+                          <FaPlus /> Add Skill
+                        </button>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              {/* Projects Section */}
+              <div className={`form-section ${activeSection === 'projects' ? 'active' : ''}`}>
+                <SectionHeader 
+                  title="Projects" 
+                  id="projects" 
+                />
+                
+                <div className="section-content">
+                  {formData.projects.map((project, index) => (
+                    <div key={index} className="content-card project-card">
+                      <div className="card-header">
+                        <h3>Project {index + 1}</h3>
+                        {index > 0 && (
+                          <button 
+                            type="button"
+                            className="modern-button danger"
+                            onClick={() => setFormData(prev => ({
+                              ...prev,
+                              projects: prev.projects.filter((_, i) => i !== index)
+                            }))}
+                          >
+                            <FaTrash /> Remove
+                          </button>
+                        )}
+                      </div>
+                      
+                      <div className="card-content">
+                        <div className="form-group">
+                          <label className="form-label">Project Name:</label>
+                          <input 
+                            type="text" 
+                            placeholder="e.g. E-commerce Website" 
+                            className="form-input enhanced-input" 
+                            value={project.name || ''} 
+                            onChange={(e) => handleNestedChange('projects', index, 'name', e.target.value)} 
+                            required 
+                          />
+                        </div>
+                        
+                        <div className="form-row">
+                          <div className="form-group half">
+                            <label className="form-label">Start Date:</label>
+                            <DateSelector
+                              id={`project-start-${index}`}
+                              value={project.durationStart}
+                              onChange={(e) => handleNestedChange('projects', index, 'durationStart', e.target.value)}
+                              required
+                            />
+                          </div>
+                          
+                          <div className="form-group half">
+                            <label className="form-label">End Date:</label>
+                            <DateSelector
+                              id={`project-end-${index}`}
+                              value={project.durationEnd}
+                              onChange={(e) => handleNestedChange('projects', index, 'durationEnd', e.target.value)}
+                              required
+                            />
+                          </div>
+                        </div>
+                        
+                        <div className="form-group">
+                          <label className="form-label">Project Details:</label>
+                          <textarea 
+                            placeholder="Describe the project, technologies used, and your role" 
+                            className="form-input enhanced-textarea" 
+                            value={project.details || ''} 
+                            onChange={(e) => handleNestedChange('projects', index, 'details', e.target.value)} 
+                            required 
+                            rows={4}
+                          />
+                        </div>
+                      </div>
+                    </div>
+                  ))}
+                  
+                  <button type="button" onClick={addProject} className="modern-button ghost">
+                    <FaPlus /> Add Project
+                  </button>
+                </div>
+              </div>
+
+              {/* Template Selection Section */}
+              <div className={`form-section ${activeSection === 'template' ? 'active' : ''}`}>
+                <SectionHeader 
+                  title="Choose Template" 
+                  id="template" 
+                />
+                
+                <div className="section-content">
+                  <div className="content-card">
+                    <div className="card-header">
+                      <h3>Resume Template</h3>
+                    </div>
+                    
+                    <div className="card-content">
+                      <div className="form-group">
+                        <label className="form-label">Select a Resume Template:</label>
+                        <select 
+                          id="template" 
+                          name="template" 
+                          className="form-input enhanced-select" 
+                          value={formData.template} 
+                          onChange={handleChange}
+                          required
+                        >
+                          <option value="">Select a template</option>
+                          {Object.entries(templates).map(([key, { label }]) => (
+                            <option key={key} value={key}>{label || key}</option>
+                          ))}
+                        </select>
+                      </div>
+
+                      <button type="submit" className="modern-button primary">
+                        <FaFileAlt /> Generate Resume
+                      </button>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </form>
+
+            {preview && (
+              <div className="resume-preview" ref={previewRef}>
+                <h2>Resume Preview</h2>
+                <div className="preview-container">
+                  <div 
+                    dangerouslySetInnerHTML={{ __html: preview }} 
+                    className="preview-content"
+                  />
+                </div>
+                <div className="button-center-container">
+                  <button 
+                    onClick={async () => {
+                      setIsGeneratingPDF(true);
+                      try {
+                        await downloadPDF();
+                      } finally {
+                        setIsGeneratingPDF(false);
+                      }
+                    }} 
+                    className="modern-button success" 
+                    disabled={isGeneratingPDF}
+                  >
+                    <FaDownload /> {isGeneratingPDF ? 'Generating PDF...' : 'Download'}
+                  </button>
+                </div>
+              </div>
             )}
           </div>
+        </main>
+      </div>
 
-          {formFields.map(({ name, label, type }) => (
-            <div key={name} className="form-group">
-              <label htmlFor={name} className="form-label">{label}:</label>
-              {type === 'textarea' ? (
-                <textarea
-                  id={name}
-                  name={name}
-                  className="form-input"
-                  value={formData[name]}
-                  onChange={handleChange}
-                  required
-                />
-              ) : (
-                <input
-                  type={type}
-                  id={name}
-                  name={name}
-                  className="form-input"
-                  value={formData[name]}
-                  onChange={handleChange}
-                  required
-                />
-              )}
-            </div>
-          ))}
-
-          <div className="form-group">
-            <label className="form-label">Experience:</label>
-            {formData.experience.map((exp, index) => (
-              <div key={index} className="mb-4">
-                <input 
-                  type="text" 
-                  placeholder="Title" 
-                  className="form-input mb-2" 
-                  value={exp.title} 
-                  onChange={(e) => handleNestedChange('experience', index, 'title', e.target.value)} 
-                  required 
-                />
-                <input 
-                  type="text" 
-                  placeholder="Company" 
-                  className="form-input mb-2" 
-                  value={exp.company} 
-                  onChange={(e) => handleNestedChange('experience', index, 'company', e.target.value)} 
-                  required 
-                />
-                <div style={{ display: 'flex', gap: '10px', alignItems: 'flex-end' }}>
-                  <div style={{ flex: 1 }}>
-                    <label style={{ fontSize: '0.9rem', color: '#666', marginBottom: '5px', display: 'block' }}>Start Date:</label>
-                    <DateSelector
-                      id={`exp-start-${index}`}
-                      value={exp.startDate}
-                      onChange={(e) => handleNestedChange('experience', index, 'startDate', e.target.value)}
-                      required
-                    />
-                  </div>
-                  <div style={{ flex: 1 }}>
-                    <label style={{ fontSize: '0.9rem', color: '#666', marginBottom: '5px', display: 'block' }}>End Date:</label>
-                    <div style={{ display: 'flex', gap: '10px', alignItems: 'center' }}>
-                      <DateSelector
-                        id={`exp-end-${index}`}
-                        value={exp.endDate}
-                        onChange={(e) => handleNestedChange('experience', index, 'endDate', e.target.value)}
-                        required={!exp.isPresent}
-                        disabled={exp.isPresent}
-                      />
-                      <label style={{ display: 'flex', alignItems: 'center', gap: '5px', whiteSpace: 'nowrap' }}>
-                        <input
-                          type="checkbox"
-                          checked={exp.isPresent}
-                          onChange={(e) => handleNestedChange('experience', index, 'isPresent', e.target.checked)}
-                        />
-                        Present
-                      </label>
-                    </div>
-                  </div>
-                </div>
-                <textarea 
-                  placeholder="Details (one per line)" 
-                  className="form-input mt-2" 
-                  value={exp.details.join('\n')} 
-                  onChange={(e) => handleNestedChange('experience', index, 'details', e.target.value.split('\n'))} 
-                  required 
-                />
-              </div>
-            ))}
-            <button type="button" onClick={addExperience} className="button">Add Experience</button>
-          </div>
-
-          <div className="form-group">
-            <label htmlFor="education" className="form-label">Education:</label>
-            <input 
-              type="text" 
-              id="education-qualification" 
-              name="qualification" 
-              className="form-input mb-2" 
-              placeholder="Qualification" 
-              value={formData.education.qualification} 
-              onChange={(e) => handleNestedChange('education', 'qualification', '', e.target.value)} 
-              required 
-            />
-            <input 
-              type="text" 
-              id="education-institution" 
-              name="institution" 
-              className="form-input mb-2" 
-              placeholder="Institution" 
-              value={formData.education.institution} 
-              onChange={(e) => handleNestedChange('education', 'institution', '', e.target.value)} 
-              required 
-            />
-            <div style={{ display: 'flex', gap: '10px', alignItems: 'flex-end' }}>
-              <div style={{ flex: 1 }}>
-                <label style={{ fontSize: '0.9rem', color: '#666', marginBottom: '5px' }}>Start Date:</label>
-                <DateSelector
-                  id="education-start"
-                  value={formData.education.startDate}
-                  onChange={(e) => handleNestedChange('education', 'startDate', '', e.target.value)}
-                  required
-                />
-              </div>
-              <div style={{ flex: 1 }}>
-                <label style={{ fontSize: '0.9rem', color: '#666', marginBottom: '5px' }}>End Date:</label>
-                <div style={{ display: 'flex', gap: '10px', alignItems: 'center' }}>
-                  <DateSelector
-                    id="education-end"
-                    value={formData.education.endDate}
-                    onChange={(e) => handleNestedChange('education', 'endDate', '', e.target.value)}
-                    required={!formData.education.isPresent}
-                    disabled={formData.education.isPresent}
-                  />
-                  <label style={{ display: 'flex', alignItems: 'center', gap: '5px', whiteSpace: 'nowrap' }}>
-                    <input
-                      type="checkbox"
-                      checked={formData.education.isPresent}
-                      onChange={(e) => handleNestedChange('education', 'isPresent', '', e.target.checked)}
-                    />
-                    Present
-                  </label>
-                </div>
-              </div>
-            </div>
-          </div>
-
-          <div className="form-group">
-            <label className="form-label">Skills:</label>
-            {formData.skills.map((skill, index) => (
-              <input 
-                key={index} 
-                type="text" 
-                className="form-input mb-2" 
-                placeholder={`Skill ${index + 1}`} 
-                value={skill} 
-                onChange={(e) => handleNestedChange('skills', index, '', e.target.value)} 
-                required 
-              />
-            ))}
-            <button type="button" onClick={addSkill} className="button">Add Skill</button>
-          </div>
-
-          <div className="form-group">
-            <label className="form-label">Projects:</label>
-            {formData.projects.map((project, index) => (
-              <div key={index} className="mb-4">
-                <input 
-                  type="text" 
-                  placeholder="Project Name" 
-                  className="form-input mb-2" 
-                  value={project.name} 
-                  onChange={(e) => handleNestedChange('projects', index, 'name', e.target.value)} 
-                  required 
-                />
-                <div className="mb-2">
-                  <div style={{ display: 'flex', gap: '10px', marginBottom: '10px' }}>
-                    <div style={{ flex: 1 }}>
-                      <label style={{ fontSize: '0.9rem', color: '#666', marginBottom: '5px', display: 'block' }}>Start Date:</label>
-                      <DateSelector
-                        id={`project-start-${index}`}
-                        value={project.durationStart}
-                        onChange={(e) => handleNestedChange('projects', index, 'durationStart', e.target.value)}
-                        required
-                      />
-                    </div>
-                    <div style={{ flex: 1 }}>
-                      <label style={{ fontSize: '0.9rem', color: '#666', marginBottom: '5px', display: 'block' }}>End Date:</label>
-                      <DateSelector
-                        id={`project-end-${index}`}
-                        value={project.durationEnd}
-                        onChange={(e) => handleNestedChange('projects', index, 'durationEnd', e.target.value)}
-                        required
-                      />
-                    </div>
-                  </div>
-                </div>
-                <textarea 
-                  placeholder="Project Details" 
-                  className="form-input" 
-                  value={project.details} 
-                  onChange={(e) => handleNestedChange('projects', index, 'details', e.target.value)} 
-                  required 
-                />
-              </div>
-            ))}
-            <button type="button" onClick={addProject} className="button">Add Project</button>
-          </div>
-
-          <div className="form-group">
-            <label htmlFor="template" className="form-label">Select Template:</label>
-            <select 
-              id="template" 
-              name="template" 
-              className="form-input" 
-              value={formData.template} 
-              onChange={handleChange}
-            >
-              {Object.entries(templates).map(([key, { label }]) => (
-                <option key={key} value={key}>{label}</option>
-              ))}
-            </select>
-          </div>
-
-          <button type="submit" className="button w-full">Generate Resume</button>
-        </form>
-
-        {preview && (
-          <div className="resume-preview mt-6">
-            <h2>Resume Preview</h2>
-            <button 
-              onClick={async () => {
-                setIsGeneratingPDF(true);
-                await downloadPDF();
-                setIsGeneratingPDF(false);
-              }} 
-              className="button mt-4" 
-              style={{ background: '#2ecc71' }}
-              disabled={isGeneratingPDF}
-            >
-              {isGeneratingPDF ? 'Generating PDF...' : 'Download as PDF'}
-            </button>
-            <div ref={previewRef} dangerouslySetInnerHTML={{ __html: preview }} />
-          </div>
-        )}
-      </main>
-
-      <footer className="footer">
+      <footer className="modern-footer">
         <div className="container">
-          <p onClick={() => navigate('/index')} style={{ cursor: 'pointer' }}>© 2025 Career Catalyst. All rights reserved.</p>
+          <div className="footer-content">
+            <div className="footer-logo">
+              <h3>Career Catalyst</h3>
+              <p>Launch your career with confidence</p>
+            </div>
+            <div className="footer-links">
+              <div className="footer-column">
+                <h4>Tools</h4>
+                <div className="footer-nav-item">
+                  <button 
+                    onClick={() => navigate('/resume-builder')} 
+                    style={{background: 'transparent', border: 'none', padding: 0, cursor: 'pointer', color: 'rgba(255, 255, 255, 0.7)', textAlign: 'left'}}
+                  >
+                    Resume Builder
+                  </button>
+                </div>
+                <div className="footer-nav-item">
+                  <button 
+                    onClick={() => navigate('/ats-checker')} 
+                    style={{background: 'transparent', border: 'none', padding: 0, cursor: 'pointer', color: 'rgba(255, 255, 255, 0.7)', textAlign: 'left'}}
+                  >
+                    ATS Checker
+                  </button>
+                </div>
+              </div>
+              <div className="footer-column">
+                <h4>Account</h4>
+                <div className="footer-nav-item">
+                  <button 
+                    onClick={() => {
+                      localStorage.removeItem('authenticated');
+                      localStorage.removeItem('username');
+                      localStorage.removeItem('userId');
+                      navigate('/login');
+                    }} 
+                    style={{background: 'transparent', border: 'none', padding: 0, cursor: 'pointer', color: 'rgba(255, 255, 255, 0.7)', textAlign: 'left'}}
+                  >
+                    Logout
+                  </button>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div className="footer-bottom">
+            <p>&copy; 2025 Career Catalyst. All rights reserved</p>
+          </div>
         </div>
       </footer>
     </div>

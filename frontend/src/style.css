@@ -1,0 +1,667 @@
+/* Resume Builder Page Specific Styles */
+
+.resume-builder-page {
+  padding-bottom: 60px;
+  background: #f9fafc;
+}
+
+/* Form Layout */
+.builder-container {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 20px;
+}
+
+.builder-layout {
+  display: flex;
+  flex-direction: column;
+  gap: 30px;
+}
+
+/* Form Fields Styling */
+.resume-builder-page .form {
+  max-width: 800px;
+  margin: 0 auto;
+  background: white;
+  border-radius: 12px;
+  box-shadow: 0 5px 20px rgba(0, 0, 0, 0.08);
+  overflow: hidden;
+}
+
+.resume-builder-page .form-section {
+  border-bottom: 1px solid #eaedf3;
+  overflow: hidden;
+}
+
+.resume-builder-page .form-section:last-child {
+  border-bottom: none;
+}
+
+/* Updated section header styles without icons */
+
+.resume-builder-page .section-header {
+  padding: 20px 25px;
+  background: #f5f7fa;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  position: relative;
+}
+
+.resume-builder-page .section-header:hover {
+  background: #eef1f6;
+}
+
+.resume-builder-page .section-header.active {
+  background: #eaedf3;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.05);
+}
+
+.resume-builder-page .section-header h2 {
+  margin: 0;
+  font-size: 1.3rem;
+  font-weight: 600;
+  color: #333;
+}
+
+
+
+.resume-builder-page .section-content {
+  max-height: 0;
+  overflow: hidden;
+  transition: max-height 0.4s ease;
+}
+
+.resume-builder-page .form-section.active .section-content {
+  max-height: 3000px;
+  padding: 25px;
+}
+
+.resume-builder-page .form-group {
+  margin-bottom: 24px;
+}
+
+.resume-builder-page .form-label {
+  display: block;
+  font-weight: 500;
+  margin-bottom: 8px;
+  color: #333;
+}
+
+.resume-builder-page .form-input {
+  width: 100%;
+  padding: 12px 15px;
+  border: 1px solid #dce0e8;
+  border-radius: 8px;
+  background: #fff;
+  font-size: 15px;
+  transition: all 0.2s ease;
+}
+
+.resume-builder-page .form-input:focus {
+  border-color: #4a6cf7;
+  box-shadow: 0 0 0 3px rgba(74, 108, 247, 0.15);
+  outline: none;
+}
+
+.resume-builder-page .enhanced-textarea {
+  min-height: 120px;
+  resize: vertical;
+  line-height: 1.6;
+}
+
+.resume-builder-page .enhanced-select {
+  background-image: url("data:image/svg+xml;charset=utf-8,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' fill='none' stroke='%23333' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M4 6l4 4 4-4'/%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: right 12px center;
+  background-size: 16px;
+  padding-right: 36px;
+  appearance: none;
+}
+
+.resume-builder-page .input-help {
+  display: block;
+  font-size: 0.85rem;
+  color: #6c757d;
+  margin-top: 5px;
+}
+
+/* Form Rows */
+.resume-builder-page .form-row {
+  display: flex;
+  gap: 20px;
+}
+
+.resume-builder-page .half {
+  flex: 1;
+}
+
+/* Consistent Card Styling */
+
+.content-card {
+  background: rgba(255, 255, 255, 0.85); /* More semi-transparent white background */
+  border-radius: 8px;
+  box-shadow: 0 3px 10px rgba(0, 0, 0, 0.08);
+  margin-bottom: 20px;
+  transition: all 0.3s ease;
+  overflow: hidden;
+}
+
+.content-card:hover {
+  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.12);
+}
+
+.card-header {
+  padding: 15px 20px;
+  background: #f8f9fa;
+  border-bottom: 1px solid #e9ecef;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.card-header h3 {
+  margin: 0;
+  font-size: 1.1rem;
+  color: #4a5568;
+  font-weight: 600;
+}
+
+.card-content {
+  padding: 20px;
+  color: #000000; /* Pure black text */
+}
+
+.content-card .form-label {
+  color: #000000; /* Black text for form labels */
+  font-weight: 600;
+}
+
+.content-card .form-input {
+  color: #000000;
+  border-color: rgba(0, 0, 0, 0.2);
+}
+
+.content-card .form-input:focus {
+  color: #000000;
+  border-color: #4a6cf7;
+}
+
+.content-card textarea,
+.content-card select,
+.content-card input {
+  color: #000000 !important;
+}
+
+.content-card .input-help {
+  color: #333333;
+}
+
+/* Make sure placeholder text is darker for better visibility */
+.content-card .form-input::placeholder {
+  color: #555555;
+  opacity: 0.8;
+}
+
+/* Date selector styling */
+.date-selector {
+  display: flex;
+  gap: 10px;
+  width: 100%;
+}
+
+.date-selector select {
+  flex: 1;
+  padding: 12px 15px;
+  border-radius: 8px;
+  border: 1px solid #dce0e8;
+  background-color: white;
+  font-size: 15px;
+  background-image: url("data:image/svg+xml;charset=utf-8,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' fill='none' stroke='%23333' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M4 6l4 4 4-4'/%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: right 12px center;
+  background-size: 16px;
+  padding-right: 36px;
+  appearance: none;
+}
+
+.date-selector select:focus {
+  border-color: #4a6cf7;
+  box-shadow: 0 0 0 3px rgba(74, 108, 247, 0.15);
+  outline: none;
+}
+
+/* Update present checkbox styling */
+.date-present-wrapper {
+  display: flex;
+  align-items: center;
+  flex-direction: row;
+  width: 100%;
+}
+
+.present-checkbox {
+  display: flex;
+  align-items: center;
+  margin-right: 10px; /* Changed from margin-left to margin-right */
+  white-space: nowrap;
+  user-select: none;
+}
+
+.present-checkbox input[type="checkbox"] {
+  width: 16px;
+  height: 16px;
+  margin-right: 5px;
+}
+
+.present-checkbox span {
+  color: #000000;
+  font-weight: 500;
+}
+
+/* Skills section styling */
+.skills-container {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.skill-item {
+  display: flex;
+  gap: 10px;
+  align-items: center;
+}
+
+.skill-remove-button {
+  background: #ff4e42;
+  color: white;
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: none;
+  font-size: 18px;
+  cursor: pointer;
+  flex-shrink: 0;
+}
+
+.skill-remove-button:hover {
+  background: #e03e33;
+}
+
+.skill-add {
+  align-self: flex-start;
+  margin-top: 5px;
+}
+
+/* Button styling */
+.resume-builder-page .add-button {
+  background: linear-gradient(135deg, #4a6cf7, #2e56db);
+  color: white;
+  border: none;
+  padding: 10px 18px;
+  border-radius: 8px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 15px;
+  font-weight: 500;
+  transition: all 0.3s ease;
+  box-shadow: 0 4px 10px rgba(74, 108, 247, 0.2);
+}
+
+.resume-builder-page .add-button:hover {
+  background: linear-gradient(135deg, #2e56db, #1a44cc);
+  transform: translateY(-1px);
+  box-shadow: 0 6px 12px rgba(74, 108, 247, 0.25);
+}
+
+.resume-builder-page .remove-button {
+  background: #ff4e42;
+  color: white;
+  border: none;
+  padding: 8px 16px;
+  border-radius: 6px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 14px;
+  transition: background-color 0.3s;
+}
+
+.resume-builder-page .remove-button:hover {
+  background: #e03e33;
+}
+
+.resume-builder-page .generate-button {
+  background: linear-gradient(135deg, #4a6cf7, #2e56db);
+  color: white;
+  border: none;
+  width: 100%;
+  padding: 14px 20px;
+  border-radius: 8px;
+  font-size: 16px;
+  font-weight: 600;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.3s;
+  margin-top: 15px;
+  box-shadow: 0 4px 10px rgba(74, 108, 247, 0.2);
+}
+
+.resume-builder-page .generate-button:hover {
+  background: linear-gradient(135deg, #2e56db, #1a44cc);
+  transform: translateY(-1px);
+  box-shadow: 0 6px 12px rgba(74, 108, 247, 0.25);
+}
+
+/* Resume preview styling */
+.resume-preview {
+  background: white;
+  border-radius: 12px;
+  box-shadow: 0 5px 20px rgba(0, 0, 0, 0.08);
+  padding: 30px;
+  margin-top: 40px;
+}
+
+.resume-preview h2 {
+  text-align: center;
+  margin-bottom: 25px;
+  font-weight: 600;
+  color: #333;
+  position: relative;
+}
+
+.resume-preview h2::after {
+  content: '';
+  position: absolute;
+  bottom: -10px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 80px;
+  height: 3px;
+  background: linear-gradient(to right, #4a6cf7, #2e56db);
+  border-radius: 3px;
+}
+
+.preview-container {
+  background: white;
+  padding: 30px;
+  border-radius: 8px;
+  border: 1px solid #e0e0e0;
+  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
+  margin-bottom: 25px;
+  min-height: 500px;
+  overflow: auto;
+  max-height: 800px;
+}
+
+.preview-content {
+  font-family: Arial, sans-serif;
+  color: #000;
+  line-height: 1.5;
+}
+
+/* PDF Download button */
+.download-button {
+  background: linear-gradient(135deg, #2ecc71, #27ae60) !important;
+  color: white;
+  border: none;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  margin: 0 auto !important;
+  padding: 14px 28px !important;
+  font-weight: 600;
+  font-size: 16px;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: all 0.3s ease !important;
+  box-shadow: 0 4px 10px rgba(46, 204, 113, 0.2);
+}
+
+.download-button:hover {
+  background: linear-gradient(135deg, #27ae60, #219653) !important;
+  transform: translateY(-1px);
+  box-shadow: 0 6px 12px rgba(46, 204, 113, 0.25);
+}
+
+.download-button:disabled {
+  background: linear-gradient(135deg, #95a5a6, #7f8c8d) !important;
+  cursor: not-allowed;
+  transform: none;
+  box-shadow: none;
+}
+
+/* Utility classes */
+.resume-builder-page .mt-2 {
+  margin-top: 8px;
+}
+
+.resume-builder-page .mb-2 {
+  margin-bottom: 8px;
+}
+
+/* Animations */
+@keyframes slideDown {
+  from { max-height: 0; }
+  to { max-height: 3000px; }
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+  .resume-builder-page .form {
+    padding: 0;
+    box-shadow: none;
+  }
+  
+  .resume-builder-page .form-section.active .section-content {
+    padding: 20px 15px;
+  }
+  
+  .resume-builder-page .form-row {
+    flex-direction: column;
+    gap: 15px;
+  }
+  
+  .date-selector {
+    flex-direction: column;
+    gap: 8px;
+  }
+  
+  .preview-container {
+    padding: 15px;
+  }
+  
+  .resume-preview {
+    padding: 20px 15px;
+  }
+  
+  .download-button {
+    width: 100%;
+    padding: 12px 15px !important;
+  }
+}
+
+/* Modern Button Styles - Add to your CSS file */
+.modern-button {
+  padding: 10px 18px;
+  border-radius: 8px;
+  border: none;
+  font-weight: 600;
+  font-size: 15px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  box-shadow: 0 2px 5px rgba(0,0,0,0.08);
+  position: relative;
+  overflow: hidden;
+}
+
+/* Primary button - for important actions */
+.modern-button.primary {
+  background: linear-gradient(135deg, #4a6cf7, #2e56db);
+  color: white;
+}
+
+.modern-button.primary:hover {
+  background: linear-gradient(135deg, #3a5ce6, #1e46cb);
+  transform: translateY(-2px);
+  box-shadow: 0 4px 8px rgba(46, 86, 219, 0.3);
+}
+
+/* Secondary button - for navigation */
+.modern-button.secondary {
+  background: #2a4494; /* Solid blue that matches the gradient theme */
+  color: #fff;
+  border: 1px solid #3a5ce6;
+}
+
+.modern-button.secondary:hover {
+  background: #345bc7;
+  transform: translateY(-2px);
+  box-shadow: 0 4px 8px rgba(42, 68, 148, 0.3);
+}
+
+/* Success button - for confirmations */
+.modern-button.success {
+  background: linear-gradient(135deg, #2ecc71, #27ae60);
+  color: white;
+}
+
+.modern-button.success:hover {
+  background: linear-gradient(135deg, #27ae60, #219653);
+  transform: translateY(-2px);
+  box-shadow: 0 4px 8px rgba(46, 204, 113, 0.3);
+}
+
+/* Danger button - for destructive actions */
+.modern-button.danger {
+  background: linear-gradient(135deg, #e74c3c, #c0392b);
+  color: white;
+}
+
+.modern-button.danger:hover {
+  background: linear-gradient(135deg, #c0392b, #a33022);
+  transform: translateY(-2px);
+  box-shadow: 0 4px 8px rgba(231, 76, 60, 0.3);
+}
+
+/* Ghost button - for less emphasis */
+.modern-button.ghost {
+  background: #e9efff; /* Solid light blue */
+  color: #4a6cf7;
+  border: 1px solid #4a6cf7;
+  transition: all 0.3s ease;
+}
+
+.modern-button.ghost:hover {
+  background: #d9e3ff;
+  transform: translateY(-2px);
+  box-shadow: 0 2px 8px rgba(74, 108, 247, 0.2);
+}
+
+/* Ripple effect for all buttons */
+.modern-button:after {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(90deg, rgba(255,255,255,0) 0%, rgba(255,255,255,0.2) 50%, rgba(255,255,255,0) 100%);
+  transition: all 0.6s ease;
+}
+
+.modern-button:hover:after {
+  left: 100%;
+}
+
+.modern-button:active {
+  transform: scale(0.97);
+}
+
+/* Special styling for skill remove button */
+.modern-skill-remove {
+  width: 28px;
+  height: 28px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+  padding: 0;
+  font-size: 16px;
+}
+
+/* Danger button (remove buttons) with solid background */
+.modern-button.danger.modern-skill-remove {
+  background: #e74c3c; /* Full solid color */
+  color: white;
+}
+
+.modern-button.danger.modern-skill-remove:hover {
+  background: #c0392b;
+}
+
+/* Specific button for footer navigation */
+.footer-button {
+  background: #2d3748; /* Dark solid color for footer */
+  border: none;
+  padding: 8px 12px;
+  border-radius: 6px;
+  cursor: pointer;
+  color: #e2e8f0;
+  text-align: left;
+  width: 100%;
+  display: block;
+}
+
+.footer-button:hover {
+  background: #3a4c63;
+  color: #ffffff;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+}
+
+/* Modern geometric divider styling */
+.geometric-divider {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  width: 100%;
+  line-height: 0;
+  overflow: hidden;
+}
+
+.geometric-divider svg {
+  display: block;
+  width: 100%;
+  height: 70px;
+  filter: drop-shadow(0 4px 6px rgba(0,0,0,0.05));
+}
+
+.button-center-container {
+  display: flex;
+  justify-content: center;
+  margin-top: 20px;
+}
+
+.resume-preview .modern-button.success {
+  min-width: 220px;
+}
+
+
+
+
