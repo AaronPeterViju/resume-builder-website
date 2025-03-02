@@ -7,21 +7,34 @@ function Signup() {
   const [username, setUsername] = useState('');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
+  const [errorMessage, setErrorMessage] = useState('');
+  const [successMessage, setSuccessMessage] = useState('');
   const navigate = useNavigate();
 
   const handleSubmit = async (event) => {
     event.preventDefault();
+    setErrorMessage('');
+    setSuccessMessage('');
+    
     try {
       const response = await axios.post('http://localhost:5000/api/auth/signup', { username, email, password });
       if (response.status === 201) {
-        alert('User signed up successfully');
-        navigate('/login');
+        setSuccessMessage('User signed up successfully!');
+        setTimeout(() => {
+          navigate('/login');
+        }, 1500);
       } else {
-        alert('Sign-up failed');
+        setErrorMessage('Sign-up failed');
       }
     } catch (error) {
-      alert('Error signing up: User Already exists ' + error.message);
+      setErrorMessage(error.response?.data?.message || 'Error signing up: User may already exist');
     }
+  };
+
+  // Clear error message when user starts typing
+  const handleInputChange = (setter, value) => {
+    setter(value);
+    setErrorMessage('');
   };
 
   return (
@@ -30,6 +43,19 @@ function Signup() {
       <div className="center-container">
         <div className="animated-box">
           <h2 className="text-2xl font-bold mb-6 text-center">Sign Up</h2>
+          
+          {errorMessage && (
+            <div className="error-message">
+              {errorMessage}
+            </div>
+          )}
+          
+          {successMessage && (
+            <div className="success-message">
+              {successMessage}
+            </div>
+          )}
+          
           <form onSubmit={handleSubmit}>
             <div className="form-group mb-4">
               <label className="form-label">Username</label>
@@ -37,7 +63,7 @@ function Signup() {
                 type="text"
                 className="form-input"
                 value={username}
-                onChange={(e) => setUsername(e.target.value)}
+                onChange={(e) => handleInputChange(setUsername, e.target.value)}
                 required
               />
             </div>
@@ -47,7 +73,7 @@ function Signup() {
                 type="email"
                 className="form-input"
                 value={email}
-                onChange={(e) => setEmail(e.target.value)}
+                onChange={(e) => handleInputChange(setEmail, e.target.value)}
                 required
               />
             </div>
@@ -57,7 +83,7 @@ function Signup() {
                 type="password"
                 className="form-input"
                 value={password}
-                onChange={(e) => setPassword(e.target.value)}
+                onChange={(e) => handleInputChange(setPassword, e.target.value)}
                 required
               />
             </div>

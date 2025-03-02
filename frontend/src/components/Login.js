@@ -6,6 +6,7 @@ import '../styles.css';
 function Login() {
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
+  const [errorMessage, setErrorMessage] = useState('');
   const navigate = useNavigate();
 
   const handleSubmit = async (event) => {
@@ -15,14 +16,20 @@ function Login() {
       if (response.status === 200) {
         localStorage.setItem('authenticated', 'true');
         localStorage.setItem('username', username);
-        localStorage.setItem('userId', response.data.userId); // Store the user ID
+        localStorage.setItem('userId', response.data.userId);
         navigate('/index');
       } else {
-        alert('Invalid username or password');
+        setErrorMessage('Invalid username or password');
       }
     } catch (error) {
-      alert('Error : Incorrect Credentials - ' + error.message);
+      setErrorMessage('Error: Incorrect credentials');
     }
+  };
+
+  // Clear error message when user starts typing
+  const handleInputChange = (setter, value) => {
+    setter(value);
+    setErrorMessage('');
   };
 
   return (
@@ -31,6 +38,13 @@ function Login() {
       <div className="center-container">
         <div className="animated-box">
           <h2 className="text-2xl font-bold mb-6 text-center">Login</h2>
+          
+          {errorMessage && (
+            <div className="error-message">
+              {errorMessage}
+            </div>
+          )}
+          
           <form onSubmit={handleSubmit}>
             <div className="form-group mb-4">
               <label className="form-label">Username</label>
@@ -38,7 +52,7 @@ function Login() {
                 type="text"
                 className="form-input"
                 value={username}
-                onChange={(e) => setUsername(e.target.value)}
+                onChange={(e) => handleInputChange(setUsername, e.target.value)}
                 required
               />
             </div>
@@ -48,7 +62,7 @@ function Login() {
                 type="password"
                 className="form-input"
                 value={password}
-                onChange={(e) => setPassword(e.target.value)}
+                onChange={(e) => handleInputChange(setPassword, e.target.value)}
                 required
               />
             </div>
