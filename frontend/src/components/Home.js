@@ -151,8 +151,8 @@ function Home() {
             <div className="footer-links">
               <div className="footer-column">
                 <h4>Product</h4>
-                <Link to="/ats-checker">ATS Checker</Link>
-                <Link to="/resume-builder">Resume Builder</Link>
+                <Link to="/login">ATS Checker</Link>
+                <Link to="/login">Resume Builder</Link>
               </div>
             </div>
           </div>
