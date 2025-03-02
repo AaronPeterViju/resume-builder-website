@@ -31,6 +31,12 @@ function ResumeBuilder() {
     loadPdfMake().then(setPdfMakeReady);
   }, []);
 
+  // Add this function near the top of your ResumeBuilder component
+  const navigateToTop = (path) => {
+    navigate(path);
+    window.scrollTo(0, 0);
+  };
+
   // Form handlers
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -707,7 +713,7 @@ function ResumeBuilder() {
                 <h4>Tools</h4>
                 <div className="footer-nav-item">
                   <button 
-                    onClick={() => navigate('/resume-builder')} 
+                    onClick={() => navigateToTop('/resume-builder')} 
                     style={{background: 'transparent', border: 'none', padding: 0, cursor: 'pointer', color: 'rgba(255, 255, 255, 0.7)', textAlign: 'left'}}
                   >
                     Resume Builder
@@ -715,7 +721,7 @@ function ResumeBuilder() {
                 </div>
                 <div className="footer-nav-item">
                   <button 
-                    onClick={() => navigate('/ats-checker')} 
+                    onClick={() => navigateToTop('/ats-checker')} 
                     style={{background: 'transparent', border: 'none', padding: 0, cursor: 'pointer', color: 'rgba(255, 255, 255, 0.7)', textAlign: 'left'}}
                   >
                     ATS Checker
@@ -730,7 +736,7 @@ function ResumeBuilder() {
                       localStorage.removeItem('authenticated');
                       localStorage.removeItem('username');
                       localStorage.removeItem('userId');
-                      navigate('/login');
+                      navigateToTop('/login');
                     }} 
                     style={{background: 'transparent', border: 'none', padding: 0, cursor: 'pointer', color: 'rgba(255, 255, 255, 0.7)', textAlign: 'left'}}
                   >

@@ -13,6 +13,11 @@ function ATSChecker() {
   const [showResults, setShowResults] = useState(false);
   const [isDragging, setIsDragging] = useState(false);
 
+  const navigateToTop = (path) => {
+    navigate(path);
+    window.scrollTo(0, 0);
+  };
+
   useEffect(() => {
     // Animation for elements on scroll
     const observerOptions = {
@@ -348,7 +353,7 @@ const renderScoreGauge = () => {
                   <h4>Create New Resume</h4>
                   <p>Or start fresh with our resume builder for optimal results.</p>
                   <button 
-                    onClick={() => navigate('/resume-builder')} 
+                    onClick={() => navigateToTop('/resume-builder')} // Changed from navigate to navigateToTop
                     className="button primary-button"
                     style={{
                       width: '100%',
@@ -415,7 +420,7 @@ const renderScoreGauge = () => {
                 <h4>Tools</h4>
                 <div className="footer-nav-item">
                   <button 
-                    onClick={() => navigate('/resume-builder')} 
+                    onClick={() => navigateToTop('/resume-builder')} 
                     style={{background: 'transparent', border: 'none', padding: 0, cursor: 'pointer', color: 'rgba(255, 255, 255, 0.7)', textAlign: 'left'}}
                   >
                     Resume Builder
@@ -423,7 +428,7 @@ const renderScoreGauge = () => {
                 </div>
                 <div className="footer-nav-item">
                   <button 
-                    onClick={() => navigate('/ats-checker')} 
+                    onClick={() => navigateToTop('/ats-checker')} 
                     style={{background: 'transparent', border: 'none', padding: 0, cursor: 'pointer', color: 'rgba(255, 255, 255, 0.7)', textAlign: 'left'}}
                   >
                     ATS Checker
@@ -438,7 +443,7 @@ const renderScoreGauge = () => {
                       localStorage.removeItem('authenticated');
                       localStorage.removeItem('username');
                       localStorage.removeItem('userId');
-                      navigate('/login');
+                      navigateToTop('/login');
                     }} 
                     style={{background: 'transparent', border: 'none', padding: 0, cursor: 'pointer', color: 'rgba(255, 255, 255, 0.7)', textAlign: 'left'}}
                   >
