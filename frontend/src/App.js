@@ -7,6 +7,7 @@ import ATSChecker from './components/ATSChecker';
 import ResumeBuilder from './components/ResumeBuilder';
 import Index from './components/Index'; // Ensure this matches the file name
 import './styles.css';
+import './style.css';
 
 function App() {
   return (
