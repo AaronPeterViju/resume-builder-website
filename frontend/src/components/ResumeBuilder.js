@@ -71,26 +71,8 @@ function ResumeBuilder() {
   // Form submission
   const handleSubmit = (e) => {
     e.preventDefault();
-    try {
-      const selectedTemplate = templates[formData.template];
-      if (!selectedTemplate || !selectedTemplate.render) {
-        console.error('Template not found or missing render method:', formData.template);
-        alert('Error: Selected template is not available. Please choose a different template.');
-        return;
-      }
-      const renderedHtml = selectedTemplate.render(formData, formatMonthYear);
-      setPreview(renderedHtml);
-      
-      // Scroll to preview section
-      setTimeout(() => {
-        if (previewRef.current) {
-          previewRef.current.scrollIntoView({ behavior: 'smooth', block: 'start' });
-        }
-      }, 100);
-    } catch (error) {
-      console.error('Error generating preview:', error);
-      alert('Error generating resume preview. Please try again.');
-    }
+    const selectedTemplate = templates[formData.template];
+    setPreview(selectedTemplate.render(formData, formatMonthYear));
   };
 
   // Date selection components
@@ -673,22 +655,89 @@ function ResumeBuilder() {
             {preview && (
               <div className="resume-preview" ref={previewRef}>
                 <h2>Resume Preview</h2>
-                <div className="preview-container">
-                  <div 
-                    dangerouslySetInnerHTML={{ __html: preview }} 
-                    className="preview-content"
-                  />
+                <div className="preview-iframe-container">
+                  <iframe
+                    title="Resume Preview"
+                    className="resume-preview-iframe"
+                    srcDoc={`
+                      <!DOCTYPE html>
+                      <html>
+                        <head>
+                          <style>
+                            body {
+                              margin: 0;
+                              padding: 0;
+                              font-family: Arial, sans-serif;
+                              color: #000;
+                              line-height: 1.5;
+                            }
+                            /* Template-specific styles */
+                            .section-title {
+                              font-size: 14px;
+                              font-weight: bold;
+                              color: #2c3e50;
+                              margin: 10px 0;
+                              padding-bottom: 5px;
+                              border-bottom: 1px solid #3498db;
+                              text-decoration: underline;
+                              text-decoration-color: #3498db;
+                            }
+                            table {
+                              width: 100%;
+                              border-collapse: collapse;
+                            }
+                            td {
+                              padding: 5px;
+                              vertical-align: top;
+                            }
+                            h1, h2, h3, h4, h5, h6 {
+                              margin: 0;
+                              padding: 0;
+                              color: #2c3e50;
+                            }
+                            ul {
+                              margin: 5px 0;
+                              padding-left: 20px;
+                            }
+                            li {
+                              margin-bottom: 3px;
+                            }
+                            p {
+                              margin: 5px 0;
+                            }
+                            .header-section {
+                              text-align: center;
+                              margin-bottom: 20px;
+                            }
+                            .header {
+                              font-size: 24px;
+                              font-weight: bold;
+                            }
+                            .subheader {
+                              font-size: 16px;
+                              color: #7f8c8d;
+                            }
+                            .company {
+                              color: #3498db;
+                            }
+                            .date {
+                              font-style: italic;
+                              color: #7f8c8d;
+                            }
+                          </style>
+                        </head>
+                        <body>
+                          ${preview}
+                        </body>
+                      </html>
+                    `}
+                    seamless
+                    sandbox="allow-same-origin"
+                  ></iframe>
                 </div>
                 <div className="button-center-container">
                   <button 
-                    onClick={async () => {
-                      setIsGeneratingPDF(true);
-                      try {
-                        await downloadPDF();
-                      } finally {
-                        setIsGeneratingPDF(false);
-                      }
-                    }} 
+                    onClick={downloadPDF} 
                     className="modern-button success" 
                     disabled={isGeneratingPDF}
                   >
