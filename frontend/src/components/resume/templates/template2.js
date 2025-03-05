@@ -39,7 +39,7 @@ export const template2 = {
           z-index: 1;
         }
         .name-title h1 {
-          font-size: 36px;
+          font-size: 28px;
           margin: 0;
           font-weight: 700;
           letter-spacing: -1px;
