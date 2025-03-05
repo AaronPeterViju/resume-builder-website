@@ -43,12 +43,14 @@ export const template2 = {
           margin: 0;
           font-weight: 700;
           letter-spacing: -1px;
+          color: white;
         }
         .name-title h2 {
           font-size: 18px;
           margin: 5px 0 0;
           font-weight: 400;
           opacity: 0.9;
+          color:white;
         }
         .contact-info {
           text-align: right;
