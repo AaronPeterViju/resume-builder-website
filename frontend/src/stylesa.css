@@ -1,39 +1,72 @@
-.App {
-    text-align: center;
-  }
+body {
+  font-family: Arial, sans-serif;
+  margin: 0;
+  padding: 0;
+  background-color: #f4f4f4;
+}
+
+.header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background-color: #ffffff;
+  color: black;
+  padding: 10px 20px;
+  font-family: 'Poppins', sans-serif;
+}
+
+.button-secondary {
+  height: 50px;
+  width: 150px;
+  background-color: #ff4d4d;
+  color: white;
+  border-radius: var(--border-radius);
+  border: none;
+  padding: 8px 16px;
+  cursor: pointer;
+  text-align: center;
+
+}
+
+.button-secondary:hover {
+  background-color: #cc0000;
+}
+
+.admin-content {
+  padding: 20px;
+}
+
+.admin-section {
   
-  .App-logo {
-    height: 40vmin;
-    pointer-events: none;
-  }
-  
-  @media (prefers-reduced-motion: no-preference) {
-    .App-logo {
-      animation: App-logo-spin infinite 20s linear;
-    }
-  }
-  
-  .App-header {
-    background-color: #282c34;
-    min-height: 100vh;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    font-size: calc(10px + 2vmin);
-    color: white;
-  }
-  
-  .App-link {
-    color: #61dafb;
-  }
-  
-  @keyframes App-logo-spin {
-    from {
-      transform: rotate(0deg);
-    }
-    to {
-      transform: rotate(360deg);
-    }
-  }
-  
+
+  font-family: 'Glacial Indifference', sans-serif;
+}
+
+.admin-list {
+  list-style-type: none;
+  padding: 0;
+}
+
+.admin-list li {
+  background: #ddd;
+  margin: 5px 0;
+  padding: 10px;
+  border-radius: 4px;
+}
+.button {
+  background-color: var(--primary-color);
+  color: white;
+  padding: 0.75rem 1.5rem;
+  border-radius: var(--border-radius);
+  border: none;
+  font-weight: 500;
+  cursor: pointer;
+  transition: var(--transition);
+  text-decoration: none;
+  display: inline-block;
+}
+
+.button:hover {
+  background-color: #0a5cb8;
+  transform: translateY(-1px);
+}
