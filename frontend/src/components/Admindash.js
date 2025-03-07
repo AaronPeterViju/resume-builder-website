@@ -20,9 +20,12 @@ const AdminDashboard = () => {
       <header className="header">
         <h1>Career Catalyst</h1>
         <h1>Admin Dashboard</h1>
+        <Link to="/index">
         <button onClick={logout} className="button-secondary">
-          Logout
+          User Dashboard/logout
         </button>
+        </Link>
+
       </header>
       <div className="admin-content">
         <section className="admin-section">
