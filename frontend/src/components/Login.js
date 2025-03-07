@@ -11,25 +11,18 @@ function Login() {
 
   const handleSubmit = async (event) => {
     event.preventDefault();
-    setErrorMessage('');
     try {
       const response = await axios.post('http://localhost:5000/api/auth/login', { username, password });
-      
       if (response.status === 200) {
         localStorage.setItem('authenticated', 'true');
         localStorage.setItem('username', username);
         localStorage.setItem('userId', response.data.userId);
-        localStorage.setItem('isAdmin', response.data.isAdmin);
-        
-        // Redirect based on user role
-        if (response.data.isAdmin) {
-          navigate('/admin-dashboard');
-        } else {
-          navigate('/index');
-        }
+        navigate('/index');
+      } else {
+        setErrorMessage('Invalid username or password');
       }
     } catch (error) {
-      setErrorMessage(error.response?.data || 'Error: Incorrect credentials');
+      setErrorMessage('Error: Incorrect credentials');
     }
   };
 
