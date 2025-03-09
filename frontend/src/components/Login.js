@@ -13,11 +13,22 @@ function Login() {
     event.preventDefault();
     try {
       const response = await axios.post('http://localhost:5000/api/auth/login', { username, password });
+
       if (response.status === 200) {
+        const { role, userId } = response.data;
+  
+        // Store authentication data
         localStorage.setItem('authenticated', 'true');
         localStorage.setItem('username', username);
-        localStorage.setItem('userId', response.data.userId);
-        navigate('/index');
+        localStorage.setItem('userId', userId);
+        localStorage.setItem('role', role);
+
+        // Redirect based on role
+        if (role === 'admin') {
+          navigate('/admin-dashboard');
+        } else {
+          navigate('/index');
+        }
       } else {
         setErrorMessage('Invalid username or password');
       }
@@ -39,11 +50,7 @@ function Login() {
         <div className="animated-box">
           <h2 className="text-2xl font-bold mb-6 text-center">Login</h2>
           
-          {errorMessage && (
-            <div className="error-message">
-              {errorMessage}
-            </div>
-          )}
+          {errorMessage && <div className="error-message">{errorMessage}</div>}
           
           <form onSubmit={handleSubmit}>
             <div className="form-group mb-4">
