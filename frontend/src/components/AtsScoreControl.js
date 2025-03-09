@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import '../stylesa.css';
+
 
 const AtsScoreControl = () => {
   const [intensity, setIntensity] = useState(50);

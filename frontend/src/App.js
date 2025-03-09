@@ -10,7 +10,6 @@ import AtsScoreControl from './components/AtsScoreControl'; //AtsScoreControl
 import Index from './components/Index'; // Ensure this matches the file name
 import './styles.css';
 import './style.css';
-import './stylesa.css' //adminstyles
 function App() {
   return (
     <Router>
