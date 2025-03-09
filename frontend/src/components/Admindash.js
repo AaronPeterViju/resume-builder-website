@@ -21,25 +21,25 @@ const AdminDashboard = () => {
         <h1>Career Catalyst</h1>
         <h1>Admin Dashboard</h1>
         <Link to="/index">
-        <button onClick={logout} className="button-secondary">
-          User Dashboard/logout
-        </button>
+          <button onClick={logout} className="button-secondary">
+            User Dashboard/logout
+          </button>
         </Link>
-
       </header>
       <div className="admin-content">
         <section className="admin-section">
           <Link to="/AtsScoreControl">
             <button className="button">ATS Score Control</button>
           </Link>
-          
           <ul id="ats-log-list" className="admin-list"></ul>
-        </section>
-        <section className="admin-section">
+
+          {/* <section className="admin-section">
           <button onClick={TemplateManagement} className="button">
             Template Management
           </button>
           <ul id="template-list" className="admin-list"></ul>
+        </section>
+        */}
         </section>
       </div>
     </div>
