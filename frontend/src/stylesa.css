@@ -124,8 +124,8 @@ body {
 .keyword-item {
   display: inline-flex;
   align-items: center;
-  background: #0073e6;
-  color: white;
+  background: #d5d5d5;
+  color: black;
   padding: 6px 12px;
   border-radius: 6px;
   font-size: 14px;
