@@ -50,7 +50,7 @@ const AtsScoreControl = () => {
         intensity: Number(intensity),
         keywords: Array.from(keywords)
       });
-      
+     
       setMessage({ type: 'success', text: 'Settings saved successfully. All stored resumes have been deleted.' });
     } catch (error) {
       console.error('Error saving ATS settings:', error);
@@ -103,7 +103,7 @@ const AtsScoreControl = () => {
           </button>
         </div>
       </header>
-      
+     
       <div style={{
         maxWidth: "600px",
         margin: "40px auto",
@@ -115,7 +115,7 @@ const AtsScoreControl = () => {
         border: "1px solid #e0e0e0"
       }}>
         <h2 style={{ marginTop: 0 }}>ATS Score Control Panel</h2>
-        
+       
         {message && (
           <div style={{
             padding: "10px 15px",
@@ -123,37 +123,37 @@ const AtsScoreControl = () => {
             borderRadius: "6px",
             backgroundColor: message.type === 'success' ? "#d4edda" : "#f8d7da",
             color: message.type === 'success' ? "#155724" : "#721c24",
-            border: 1px solid ${message.type === 'success' ? "#c3e6cb" : "#f5c6cb"}
+            border: `1px solid ${message.type === 'success' ? "#c3e6cb" : "#f5c6cb"}`
           }}>
             {message.text}
           </div>
         )}
-        
+       
         <div style={{ margin: "20px 0" }}>
           <h3>ATS Intensity Control</h3>
           <p>Adjust how strict the ATS checker should be.</p>
           <p>Higher values mean stricter scoring.</p>
-          <input 
-            type="range" 
-            min="0" 
-            max="100" 
-            value={intensity} 
-            style={{ 
+          <input
+            type="range"
+            min="0"
+            max="100"
+            value={intensity}
+            style={{
               width: "100%",
               accentColor: "#0073e6"
             }}
-            onChange={handleIntensityChange} 
+            onChange={handleIntensityChange}
           />
           <p>Current Intensity: <span>{intensity}</span>%</p>
         </div>
-        
+       
         <div style={{ marginTop: "20px" }}>
           <h3>Keyword Management</h3>
           <p>Add important keywords that resumes should include</p>
           <div style={{ display: "flex", justifyContent: "center", gap: "10px", marginBottom: "15px" }}>
-            <input 
-              type="text" 
-              style={{ 
+            <input
+              type="text"
+              style={{
                 padding: "10px",
                 width: "70%",
                 border: "1px solid #ccc",
@@ -161,12 +161,12 @@ const AtsScoreControl = () => {
                 outline: "none",
                 fontSize: "14px"
               }}
-              placeholder="Enter a keyword" 
-              value={keywordInput} 
-              onChange={(e) => setKeywordInput(e.target.value)} 
+              placeholder="Enter a keyword"
+              value={keywordInput}
+              onChange={(e) => setKeywordInput(e.target.value)}
               onKeyPress={(e) => e.key === 'Enter' && addKeyword()}
             />
-            <button 
+            <button
               onClick={addKeyword}
               style={{
                 padding: "10px 16px",
@@ -185,7 +185,7 @@ const AtsScoreControl = () => {
               Add Keyword
             </button>
           </div>
-          
+         
           <div style={{
             marginTop: "15px",
             display: "flex",
@@ -204,8 +204,8 @@ const AtsScoreControl = () => {
                 fontSize: "14px",
                 fontWeight: 500
               }}>
-                {keyword} 
-                <span 
+                {keyword}
+                <span
                   style={{
                     marginLeft: "8px",
                     cursor: "pointer",
@@ -227,7 +227,7 @@ const AtsScoreControl = () => {
               </span>
             ))}
           </div>
-          
+         
           <div style={{ marginTop: "30px" }}>
             <button
               onClick={saveChanges}
