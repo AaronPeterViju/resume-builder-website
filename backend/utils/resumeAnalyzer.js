@@ -1,13 +1,18 @@
 const crypto = require('crypto');
+const AtsSettings = require('../models/AtsSettings');
 
-const analyzeResume = (content) => {
-    const atsScore = calculateATSScore(content);
-    const suggestions = generateSuggestions(content);
+const analyzeResume = async (content) => {
+    // Get ATS settings from the database
+    const settings = await AtsSettings.getSingleton();
+    const { intensity, keywords } = settings;
+
+    const atsScore = await calculateATSScore(content, intensity, keywords);
+    const suggestions = await generateSuggestions(content, intensity, keywords);
 
     return { atsScore, suggestions };
 };
 
-const calculateATSScore = (content) => {
+const calculateATSScore = async (content, intensity = 50, customKeywords = []) => {
     let score = 0;
     const totalPoints = 100; // Maximum possible score
     
@@ -36,11 +41,41 @@ const calculateATSScore = (content) => {
     if (content.match(/(\d+\s*(years?|yrs?))/i)) score += 5; // Quantified experience
     if (content.match(/(led|managed|developed|created|implemented)/i)) score += 5; // Action verbs
 
-    // Ensure score doesn't exceed 100
-    return Math.min(Math.round(score), 100);
+    // Check for custom keywords defined by admin
+    if (customKeywords && customKeywords.length > 0) {
+        // Track found and missing keywords
+        const keywordsFoundCount = customKeywords.filter(keyword => {
+            try {
+                // Escape special regex characters but keep the symbols in the keyword
+                const escapedKeyword = keyword.replace(/[-\/\\^$*+?.()|[\]{}]/g, '\\$&');
+                const regex = new RegExp(escapedKeyword, 'i'); // Case insensitive matching
+                return content.toLowerCase().match(regex);
+            } catch (error) {
+                console.error(`Invalid keyword regex: ${keyword}`, error);
+                return false;
+            }
+        }).length;
+        
+        const keywordsMissingCount = customKeywords.length - keywordsFoundCount;
+        
+        // Add bonus points for each keyword found (max 20 points)
+        const keywordBonus = Math.min(keywordsFoundCount * 5, 20);
+        score += keywordBonus;
+        
+        // Subtract points for missing keywords (max 20 points deduction)
+        const keywordPenalty = Math.min(keywordsMissingCount * 5, 20);
+        score -= keywordPenalty;
+    }
+
+    // Apply intensity factor - higher intensity means stricter scoring
+    const intensityFactor = intensity / 50; // 0.0 to 2.0
+    score = score / intensityFactor;
+
+    // Ensure score stays within 0-100 range
+    return Math.min(Math.max(Math.round(score), 0), 100);
 };
 
-const generateSuggestions = (content) => {
+const generateSuggestions = async (content, intensity = 50, customKeywords = []) => {
     const suggestions = [];
     const contentLower = content.toLowerCase();
 
@@ -101,9 +136,33 @@ const generateSuggestions = (content) => {
     if (!content.match(/\d+%|\d+\s*(years?|yrs?|people|teams?|projects?|clients?|customers?)/i)) {
         suggestions.push('Add quantifiable achievements and metrics to demonstrate your impact.');
     }
-
-    // Filter out duplicate suggestions and limit to 10
-    return [...new Set(suggestions)].slice(0, 10);
+    
+    // Custom keywords suggestions
+    if (customKeywords && customKeywords.length > 0) {
+        const missingKeywords = customKeywords.filter(keyword => {
+            try {
+                // Escape special regex characters but keep the symbols in the keyword
+                const escapedKeyword = keyword.replace(/[-\/\\^$*+?.()|[\]{}]/g, '\\$&');
+                const regex = new RegExp(escapedKeyword, 'i'); // Case insensitive matching
+                return !content.toLowerCase().match(regex);
+            } catch (error) {
+                console.error(`Invalid keyword regex: ${keyword}`, error);
+                return true; // Consider it missing if regex is invalid
+            }
+        });
+        
+        if (missingKeywords.length > 0) {
+            const keywordsList = missingKeywords.join(', ');
+            suggestions.push(`Consider adding these keywords to your resume: ${keywordsList}`);
+        }
+    }
+    
+    // Adjust number of suggestions based on intensity
+    // Higher intensity = more strict = more suggestions
+    const numberOfSuggestions = Math.min(Math.round(suggestions.length * (intensity / 50)), suggestions.length);
+    
+    // Filter out duplicate suggestions and limit based on intensity
+    return [...new Set(suggestions)].slice(0, numberOfSuggestions);
 };
 
 const generateHash = (content) => {

@@ -31,7 +31,7 @@ router.post('/upload', upload.single('resume'), async (req, res) => {
             return res.status(200).json({ atsScore: resume.atsScore, suggestions: resume.suggestions });
         }
 
-        const { atsScore, suggestions } = analyzeResume(content);
+        const { atsScore, suggestions } = await analyzeResume(content);
 
         resume = new Resume({
             filename: file.originalname,

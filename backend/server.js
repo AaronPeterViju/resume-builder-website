@@ -4,6 +4,7 @@ const bodyParser = require('body-parser');
 const cors = require('cors');
 const authRoutes = require('./routes/auth');
 const resumeRoutes = require('./routes/resume');
+const atsRoutes = require('./routes/ats');
 
 const app = express();
 const PORT = process.env.PORT || 5000;
@@ -13,6 +14,7 @@ app.use(cors());
 
 app.use('/api/auth', authRoutes);
 app.use('/api/resume', resumeRoutes);
+app.use('/api/ats', atsRoutes);
 
 app.get('/', (req, res) => {
     res.send('Welcome to the Resume Builder API');
