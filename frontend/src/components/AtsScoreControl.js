@@ -115,25 +115,24 @@ const AtsScoreControl = () => {
         border: "1px solid #e0e0e0"
       }}>
         <h2 style={{ marginTop: 0 }}>ATS Score Control Panel</h2>
-
-        {message &&(
-          <div style={{ 
+        
+        {message && (
+          <div style={{
             padding: "10px 15px",
-            backgroundcolor: message.type === "succes" ?  "#d4edda" : "#f8d7da",
-            color: message.type === "sucess" ? "#155724" : "#721c24" ,
-            borderRadius: "6px",
             margin: "15px 0",
-            border: '1px solid ${message.type === "succes" ? "#c3e6cb" : "#f5c6cb" }'
+            borderRadius: "6px",
+            backgroundColor: message.type === 'success' ? "#d4edda" : "#f8d7da",
+            color: message.type === 'success' ? "#155724" : "#721c24",
+            border: 1px solid ${message.type === 'success' ? "#c3e6cb" : "#f5c6cb"}
           }}>
-            {message.txt}
+            {message.text}
           </div>
         )}
         
         <div style={{ margin: "20px 0" }}>
           <h3>ATS Intensity Control</h3>
-          <p>Adjust the intensity of the ATS score to match your requirements.</p>
-          <p>Higher value means more strictness, lower value means more flexibility.</p>
-          <p>Default value: 50%</p>
+          <p>Adjust how strict the ATS checker should be.</p>
+          <p>Higher values mean stricter scoring.</p>
           <input 
             type="range" 
             min="0" 
@@ -150,7 +149,7 @@ const AtsScoreControl = () => {
         
         <div style={{ marginTop: "20px" }}>
           <h3>Keyword Management</h3>
-          <p>Add or remove keywords to customize the ATS score.</p>
+          <p>Add important keywords that resumes should include</p>
           <div style={{ display: "flex", justifyContent: "center", gap: "10px", marginBottom: "15px" }}>
             <input 
               type="text" 
@@ -231,14 +230,14 @@ const AtsScoreControl = () => {
           
           <div style={{ marginTop: "30px" }}>
             <button
-              onclick={saveChanges}
+              onClick={saveChanges}
               disabled={isSaving}
               style={{
                 padding: "10px 20px",
                 border: "none",
                 background: isSaving ? "#666" : "#27ae60",
                 color: "white",
-                cursor: isSaving ? "not allowed" : "pointer",
+                cursor: isSaving ? "not-allowed" : "pointer",
                 fontSize: "16px",
                 fontWeight: 500,
                 borderRadius: "6px",
