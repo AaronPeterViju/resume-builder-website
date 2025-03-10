@@ -73,20 +73,26 @@ const AdminDashboard = () => {
           boxShadow: "0 2px 10px rgba(0, 0, 0, 0.05)",
           width: "50%",
           textAlign: "center",
-          border: "1px solid #e0e0e0"
+          border: "1px solid #e0e0e0",
+          display: "flex",
+          flexDirection: "column",
+          justifyContent: "center",
+          minHeight: "100px" 
         }}>
-          <Link to="/AtsScoreControl" style={{ textDecoration: "none" }}>
+          <Link to="/AtsScoreControl" style={{ 
+            textDecoration: "none",
+            margin: "auto" 
+          }}>
             <button style={{
-              padding: "10px 16px",
+              padding: "15px 25px", 
               border: "none",
               background: "#0073e6",
               color: "white",
               cursor: "pointer",
-              fontSize: "14px",
+              fontSize: "16px", 
               fontWeight: 500,
               borderRadius: "6px",
-              transition: "background 0.3s ease",
-              marginBottom: "20px"
+              transition: "background 0.3s ease"
             }}
             onMouseOver={(e) => e.currentTarget.style.background = "#005bb5"}
             onMouseOut={(e) => e.currentTarget.style.background = "#0073e6"}
@@ -98,8 +104,6 @@ const AdminDashboard = () => {
             listStyleType: "none",
             padding: 0
           }}></ul>
-
-          {}
         </section>
       </div>
     </div>
