@@ -1,7 +1,7 @@
 import { templateConfig } from '../config';
 
-export const template2 = {
-  label: 'Modern Professional',
+export const executive = {
+  label: 'Executive',
   render: (data, formatMonthYear) => `
     <div class="resume-container">
       <style>
