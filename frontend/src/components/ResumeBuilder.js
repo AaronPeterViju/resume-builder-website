@@ -1,9 +1,11 @@
 import React, { useState, useRef, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { templateConfig, formFields, initialFormState } from './resume/config';
-import { template1 } from './resume/templates/template1';
-import { template2 } from './resume/templates/template2';
-import { template3 } from './resume/templates/template3';
+import { minimalist } from './resume/templates/minimalist';
+import { executive } from './resume/templates/executive';
+import { compact } from './resume/templates/compact';
+import { modernSidebar } from './resume/templates/modernSidebar';
+import TemplateSelector from './resume/TemplateSelector';
 import { generatePDF } from './resume/pdfGenerator';
 import { formatMonthYear, loadPdfMake } from './resume/utils';
 import '../style.css';
@@ -11,9 +13,10 @@ import { FaDownload, FaBriefcase, FaGraduationCap, FaTools, FaFileAlt, FaPlus, F
 
 // Define templates object using imported templates
 const templates = {
-  template1,
-  template2,
-  template3
+  minimalist,
+  executive,
+  compact,
+  modernSidebar
 };
 
 function ResumeBuilder() {
@@ -492,7 +495,7 @@ function ResumeBuilder() {
                 <div className="section-content">
                   <div className="content-card">
                     <div className="card-header">
-                      <h3>Professional Skills</h3>
+                      <h3>Skills</h3>
                     </div>
                     
                     <div className="card-content">
@@ -626,22 +629,10 @@ function ResumeBuilder() {
                     </div>
                     
                     <div className="card-content">
-                      <div className="form-group">
-                        <label className="form-label">Select a Resume Template:</label>
-                        <select 
-                          id="template" 
-                          name="template" 
-                          className="form-input enhanced-select" 
-                          value={formData.template} 
-                          onChange={handleChange}
-                          required
-                        >
-                          <option value="">Select a template</option>
-                          {Object.entries(templates).map(([key, { label }]) => (
-                            <option key={key} value={key}>{label || key}</option>
-                          ))}
-                        </select>
-                      </div>
+                      <TemplateSelector 
+                        selectedTemplate={formData.template} 
+                        onTemplateSelect={(template) => setFormData(prev => ({ ...prev, template }))}
+                      />
 
                       <button type="submit" className="modern-button primary">
                         <FaFileAlt /> Generate Resume
