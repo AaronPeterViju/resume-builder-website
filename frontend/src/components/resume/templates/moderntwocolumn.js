@@ -1,7 +1,7 @@
 import { templateConfig } from '../config';
 
-export const moderntwocolumn = {
-  label: 'Modern Two column',
+export const modernSidebar = {
+  label: 'ModernSidebar',
   render: (data, formatMonthYear) => `
     <div style="
       display: flex;
@@ -95,4 +95,4 @@ export const moderntwocolumn = {
   `
 };
 
-export default moderntwocolumn;
+export default modernSidebar;
