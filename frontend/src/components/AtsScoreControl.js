@@ -51,7 +51,7 @@ const AtsScoreControl = () => {
         keywords: Array.from(keywords)
       });
      
-      setMessage({ type: 'success', text: 'Settings saved successfully. All stored resumes have been deleted.' });
+      setMessage({ type: 'success', text: 'Settings saved successfully' });
     } catch (error) {
       console.error('Error saving ATS settings:', error);
       setMessage({ type: 'error', text: 'Failed to save settings' });
@@ -131,8 +131,8 @@ const AtsScoreControl = () => {
        
         <div style={{ margin: "20px 0" }}>
           <h3>ATS Intensity Control</h3>
-          <p>Adjust how strict the ATS checker should be.</p>
-          <p>Higher values mean stricter scoring.</p>
+          <p>Adjust how strict the ATS checker should be</p>
+          <p>Higher values mean stricter scoring</p>
           <input
             type="range"
             min="0"
