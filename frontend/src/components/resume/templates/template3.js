@@ -1,7 +1,7 @@
 import { templateConfig } from '../config';
 
-export const compact = {
-  label: 'Compact',
+export const template3 = {
+  label: 'Compact Elegance',
   render: (data, formatMonthYear) => `
     <div class="resume-container">
       <style>

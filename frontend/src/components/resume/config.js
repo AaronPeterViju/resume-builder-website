@@ -1,3 +1,4 @@
+// Template configuration
 export const templateConfig = {
   colors: {
     primary: '#2c3e50',
@@ -28,4 +29,4 @@ export const initialFormState = {
   skills: [''],
   projects: [{ name: '', details: '', durationStart: '', durationEnd: '' }],
   template: 'template1'
-};
+}; 

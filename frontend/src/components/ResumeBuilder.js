@@ -1,11 +1,9 @@
 import React, { useState, useRef, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { templateConfig, formFields, initialFormState } from './resume/config';
-import { minimalist } from './resume/templates/minimalist';
-import { executive } from './resume/templates/executive';
-import { compact } from './resume/templates/compact';
-import { modernSidebar } from './resume/templates/modernSidebar';
-import TemplateSelector from './resume/TemplateSelector';
+import { template1 } from './resume/templates/template1';
+import { template2 } from './resume/templates/template2';
+import { template3 } from './resume/templates/template3';
 import { generatePDF } from './resume/pdfGenerator';
 import { formatMonthYear, loadPdfMake } from './resume/utils';
 import '../style.css';
@@ -13,10 +11,9 @@ import { FaDownload, FaBriefcase, FaGraduationCap, FaTools, FaFileAlt, FaPlus, F
 
 // Define templates object using imported templates
 const templates = {
-  minimalist,
-  executive,
-  compact,
-  modernSidebar
+  template1,
+  template2,
+  template3
 };
 
 function ResumeBuilder() {
@@ -495,7 +492,7 @@ function ResumeBuilder() {
                 <div className="section-content">
                   <div className="content-card">
                     <div className="card-header">
-                      <h3>Skills</h3>
+                      <h3>Professional Skills</h3>
                     </div>
                     
                     <div className="card-content">
@@ -629,10 +626,168 @@ function ResumeBuilder() {
                     </div>
                     
                     <div className="card-content">
-                      <TemplateSelector 
-                        selectedTemplate={formData.template} 
-                        onTemplateSelect={(template) => setFormData(prev => ({ ...prev, template }))}
-                      />
+                      <div className="form-group">
+                        <label className="form-label">Select a Resume Template:</label>
+                        <div style={{
+                          display: 'flex',
+                          flexWrap: 'wrap',
+                          gap: '20px',
+                          marginBottom: '20px'
+                        }}>
+                          {Object.entries(templates).map(([key, template]) => (
+                            <div 
+                              key={key} 
+                              style={{
+                                width: '280px',
+                                border: formData.template === key ? '2px solid #3498db' : '2px solid #e0e0e0',
+                                borderRadius: '8px',
+                                overflow: 'hidden',
+                                cursor: 'pointer',
+                                transition: 'all 0.3s ease',
+                                background: 'white',
+                                boxShadow: formData.template === key 
+                                  ? '0 0 0 2px rgba(52, 152, 219, 0.3)' 
+                                  : '0 2px 8px rgba(0,0,0,0.05)'
+                              }}
+                              onClick={() => setFormData({...formData, template: key})}
+                            >
+                              <div style={{
+                                height: '350px',
+                                overflow: 'hidden',
+                                position: 'relative',
+                                background: '#f8f9fa'
+                              }}>
+                                <iframe
+                                  title={`Template ${key}`}
+                                  style={{
+                                    border: 'none',
+                                    width: '100%',
+                                    height: '100%',
+                                    pointerEvents: 'none',
+                                    transform: 'scale(0.25)',
+                                    transformOrigin: 'top left',
+                                    width: '400%',
+                                    height: '400%'
+                                  }}
+                                  srcDoc={`
+                                    <!DOCTYPE html>
+                                    <html>
+                                      <head>
+                                        <style>
+                                          body {
+                                            margin: 0;
+                                            padding: 0;
+                                            font-family: Arial, sans-serif;
+                                          }
+                                          /* Template-specific styles */
+                                          .section-title {
+                                            font-size: 14px;
+                                            font-weight: bold;
+                                            color: #2c3e50;
+                                            margin: 10px 0;
+                                            padding-bottom: 5px;
+                                            border-bottom: 1px solid #3498db;
+                                          }
+                                          table {
+                                            width: 100%;
+                                            border-collapse: collapse;
+                                          }
+                                          td {
+                                            padding: 5px;
+                                            vertical-align: top;
+                                          }
+                                          h1, h2, h3, h4, h5, h6 {
+                                            margin: 0;
+                                            padding: 0;
+                                            color: #2c3e50;
+                                          }
+                                          ul {
+                                            margin: 5px 0;
+                                            padding-left: 20px;
+                                          }
+                                          li {
+                                            margin-bottom: 3px;
+                                          }
+                                          p {
+                                            margin: 5px 0;
+                                          }
+                                          .header-section {
+                                            text-align: center;
+                                            margin-bottom: 20px;
+                                          }
+                                          .header {
+                                            font-size: 24px;
+                                            font-weight: bold;
+                                          }
+                                          .subheader {
+                                            font-size: 16px;
+                                            color: #7f8c8d;
+                                          }
+                                          .company {
+                                            color: #3498db;
+                                          }
+                                          .date {
+                                            font-style: italic;
+                                            color: #7f8c8d;
+                                          }
+                                        </style>
+                                      </head>
+                                      <body>
+                                        ${template.render({
+                                          name: "John Doe",
+                                          title: "Software Engineer",
+                                          email: "john@example.com",
+                                          phone: "123-456-7890",
+                                          linkedin: "linkedin.com/in/johndoe",
+                                          github: "github.com/johndoe",
+                                          about: "Experienced software engineer with a passion for building scalable applications.",
+                                          experience: [
+                                            {
+                                              title: "Senior Developer",
+                                              company: "Tech Company",
+                                              startDate: "2020-01",
+                                              endDate: "2023-01",
+                                              isPresent: false,
+                                              details: ["Led development team", "Implemented new features"]
+                                            }
+                                          ],
+                                          education: {
+                                            qualification: "Bachelor of Science in Computer Science",
+                                            institution: "University of Technology",
+                                            startDate: "2016-09",
+                                            endDate: "2020-05",
+                                            isPresent: false
+                                          },
+                                          skills: ["JavaScript", "React", "Node.js"],
+                                          projects: [
+                                            {
+                                              name: "Project Name",
+                                              details: "A brief description of the project",
+                                              durationStart: "2019-06",
+                                              durationEnd: "2019-12"
+                                            }
+                                          ]
+                                        }, formatMonthYear)}
+                                      </body>
+                                    </html>
+                                  `}
+                                  seamless
+                                  sandbox="allow-same-origin"
+                                ></iframe>
+                              </div>
+                              <div style={{
+                                padding: '10px',
+                                textAlign: 'center',
+                                fontWeight: '500',
+                                borderTop: '1px solid #e0e0e0',
+                                background: '#f8f9fa'
+                              }}>
+                                {template.label || key}
+                              </div>
+                            </div>
+                          ))}
+                        </div>
+                      </div>
 
                       <button type="submit" className="modern-button primary">
                         <FaFileAlt /> Generate Resume
@@ -641,102 +796,103 @@ function ResumeBuilder() {
                   </div>
                 </div>
               </div>
-            </form>
 
-            {preview && (
-              <div className="resume-preview" ref={previewRef}>
-                <h2>Resume Preview</h2>
-                <div className="preview-iframe-container">
-                  <iframe
-                    title="Resume Preview"
-                    className="resume-preview-iframe"
-                    srcDoc={`
-                      <!DOCTYPE html>
-                      <html>
-                        <head>
-                          <style>
-                            body {
-                              margin: 0;
-                              padding: 0;
-                              font-family: Arial, sans-serif;
-                              color: #000;
-                              line-height: 1.5;
-                            }
-                            /* Template-specific styles */
-                            .section-title {
-                              font-size: 14px;
-                              font-weight: bold;
-                              color: #2c3e50;
-                              margin: 10px 0;
-                              padding-bottom: 5px;
-                              border-bottom: 1px solid #3498db;
-                              text-decoration: underline;
-                              text-decoration-color: #3498db;
-                            }
-                            table {
-                              width: 100%;
-                              border-collapse: collapse;
-                            }
-                            td {
-                              padding: 5px;
-                              vertical-align: top;
-                            }
-                            h1, h2, h3, h4, h5, h6 {
-                              margin: 0;
-                              padding: 0;
-                              color: #2c3e50;
-                            }
-                            ul {
-                              margin: 5px 0;
-                              padding-left: 20px;
-                            }
-                            li {
-                              margin-bottom: 3px;
-                            }
-                            p {
-                              margin: 5px 0;
-                            }
-                            .header-section {
-                              text-align: center;
-                              margin-bottom: 20px;
-                            }
-                            .header {
-                              font-size: 24px;
-                              font-weight: bold;
-                            }
-                            .subheader {
-                              font-size: 16px;
-                              color: #7f8c8d;
-                            }
-                            .company {
-                              color: #3498db;
-                            }
-                            .date {
-                              font-style: italic;
-                              color: #7f8c8d;
-                            }
-                          </style>
-                        </head>
-                        <body>
-                          ${preview}
-                        </body>
-                      </html>
-                    `}
-                    seamless
-                    sandbox="allow-same-origin"
-                  ></iframe>
+              {/* Resume Preview Section */}
+              {preview && (
+                <div className="resume-preview" ref={previewRef}>
+                  <h2>Resume Preview</h2>
+                  <div className="preview-iframe-container">
+                    <iframe
+                      title="Resume Preview"
+                      className="resume-preview-iframe"
+                      srcDoc={`
+                        <!DOCTYPE html>
+                        <html>
+                          <head>
+                            <style>
+                              body {
+                                margin: 0;
+                                padding: 0;
+                                font-family: Arial, sans-serif;
+                                color: #000;
+                                line-height: 1.5;
+                              }
+                              /* Template-specific styles */
+                              .section-title {
+                                font-size: 14px;
+                                font-weight: bold;
+                                color: #2c3e50;
+                                margin: 10px 0;
+                                padding-bottom: 5px;
+                                border-bottom: 1px solid #3498db;
+                                text-decoration: underline;
+                                text-decoration-color: #3498db;
+                              }
+                              table {
+                                width: 100%;
+                                border-collapse: collapse;
+                              }
+                              td {
+                                padding: 5px;
+                                vertical-align: top;
+                              }
+                              h1, h2, h3, h4, h5, h6 {
+                                margin: 0;
+                                padding: 0;
+                                color: #2c3e50;
+                              }
+                              ul {
+                                margin: 5px 0;
+                                padding-left: 20px;
+                              }
+                              li {
+                                margin-bottom: 3px;
+                              }
+                              p {
+                                margin: 5px 0;
+                              }
+                              .header-section {
+                                text-align: center;
+                                margin-bottom: 20px;
+                              }
+                              .header {
+                                font-size: 24px;
+                                font-weight: bold;
+                              }
+                              .subheader {
+                                font-size: 16px;
+                                color: #7f8c8d;
+                              }
+                              .company {
+                                color: #3498db;
+                              }
+                              .date {
+                                font-style: italic;
+                                color: #7f8c8d;
+                              }
+                            </style>
+                          </head>
+                          <body>
+                            ${preview}
+                          </body>
+                        </html>
+                      `}
+                      seamless
+                      sandbox="allow-same-origin"
+                    ></iframe>
+                  </div>
+                  <div className="button-center-container">
+                    <button 
+                      onClick={downloadPDF} 
+                      className="modern-button success" 
+                      disabled={isGeneratingPDF}
+                    >
+                      <FaDownload /> {isGeneratingPDF ? 'Generating PDF...' : 'Download'}
+                    </button>
+                  </div>
                 </div>
-                <div className="button-center-container">
-                  <button 
-                    onClick={downloadPDF} 
-                    className="modern-button success" 
-                    disabled={isGeneratingPDF}
-                  >
-                    <FaDownload /> {isGeneratingPDF ? 'Generating PDF...' : 'Download'}
-                  </button>
-                </div>
-              </div>
-            )}
+              )}
+            </form>
           </div>
         </main>
       </div>
