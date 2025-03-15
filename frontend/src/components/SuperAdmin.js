@@ -80,7 +80,7 @@ const SuperAdmin = () => {
           justifyContent: "center",
           minHeight: "100px" 
         }}>
-          <Link to="/SAtsScoreControl" style={{ 
+          <Link to="/AtsScoreControl" style={{ 
             textDecoration: "none",
             margin: "auto" 
           }}>
