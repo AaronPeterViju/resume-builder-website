@@ -13,10 +13,6 @@ router.post('/signup', async (req, res) => {
             return res.status(400).json({ error: "Username already taken" });
         }
 
-        // Assign Super Admin only if it's the first user
-        const isFirstUser = (await User.countDocuments()) === 0;
-        const userRole = isFirstUser ? 'superadmin' : role || 'user';
-
         // Create and save the new user
         const user = new User({ username, email, password, role: userRole });
         await user.save();
