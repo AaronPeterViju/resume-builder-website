@@ -952,8 +952,3 @@ function ResumeBuilder() {
 }
 
 export default ResumeBuilder;
-    </div>
-  );
-}
-
-export default ResumeBuilder;
