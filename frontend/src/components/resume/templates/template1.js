@@ -1,4 +1,3 @@
-
 import { templateConfig } from '../config';
 
 export const template1 = {
@@ -204,7 +203,3 @@ export const template1 = {
     </div>
   `
 };
-
-    </div>
-  `
-}; 
