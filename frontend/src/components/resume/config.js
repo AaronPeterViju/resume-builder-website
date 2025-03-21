@@ -30,3 +30,4 @@ export const initialFormState = {
   projects: [{ name: '', details: '', durationStart: '', durationEnd: '' }],
   template: 'template1'
 }; 
+
