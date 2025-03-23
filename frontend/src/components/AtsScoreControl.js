@@ -99,7 +99,7 @@ const AtsScoreControl = () => {
             onMouseOver={(e) => e.currentTarget.style.background = "#005bb5"}
             onMouseOut={(e) => e.currentTarget.style.background = "#0073e6"}
           >
-            Back to ADMIN Dashboard (Click only if you are an ADMIN)
+            Back to ADMIN Dashboard
           </button>
         </div>
       </header>
