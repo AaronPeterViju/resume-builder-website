@@ -24,14 +24,11 @@ function Login() {
         localStorage.setItem('role', role);
 
         // Redirect based on role
-        if (role === 'superadmin') {
-          navigate('/SuperAdmin');
-        } else if (role === 'admin') {
+        if (role === 'admin') {
           navigate('/admin-dashboard');
         } else {
           navigate('/index');
         }
-        
       } else {
         setErrorMessage('Invalid username or password');
       }
