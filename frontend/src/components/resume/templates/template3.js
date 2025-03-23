@@ -1,94 +1,95 @@
 import { templateConfig } from '../config';
 
 export const template3 = {
-  label: 'Compact Elegance',
+  label: 'Ultra Minimal',
   render: (data, formatMonthYear) => `
     <div class="resume-container">
       <style>
         .resume-container {
-          max-width: 700px;
+          max-width: 800px;
           margin: 30px auto;
-          padding: 25px;
-          font-family: 'Arial', sans-serif;
-          line-height: 1.6;
-          color: ${templateConfig.colors.text};
+          padding: 40px 50px;
+          font-family: 'Inter', system-ui, sans-serif;
+          line-height: 1.5;
+          color: #333;
           background: white;
-          box-shadow: 0 4px 12px rgba(0,0,0,0.1);
-          border-radius: 10px;
         }
         .header {
-          text-align: center;
-          padding: 20px;
-          background: ${templateConfig.colors.background};
-          border-bottom: 3px solid ${templateConfig.colors.accent};
-          margin-bottom: 25px;
+          margin-bottom: 40px;
         }
-        .header h1 {
-          font-size: 28px;
+        .header-left h1 {
+          font-size: 32px;
           margin: 0;
-          color: ${templateConfig.colors.primary};
-          font-weight: 700;
+          color: #000;
+          font-weight: 600;
+          letter-spacing: -0.5px;
         }
-        .header h2 {
-          font-size: 16px;
-          margin: 5px 0 0;
-          color: ${templateConfig.colors.secondary};
+        .header-left h2 {
+          font-size: 18px;
+          margin: 8px 0 0;
+          color: #666;
           font-weight: 400;
         }
         .contact-info {
-          font-size: 12px;
-          color: ${templateConfig.colors.secondary};
-          text-align: center;
-          margin-bottom: 20px;
+          margin-top: 15px;
+          font-size: 14px;
+          color: #666;
         }
         .contact-info a {
-          color: ${templateConfig.colors.accent};
+          color: #333;
           text-decoration: none;
+          margin-right: 20px;
         }
         .section {
-          margin-bottom: 25px;
-          padding: 0 15px;
+          margin-bottom: 35px;
         }
         .section-title {
-          font-size: 18px;
+          font-size: 16px;
           font-weight: 600;
-          color: ${templateConfig.colors.primary};
-          border-left: 4px solid ${templateConfig.colors.accent};
-          padding-left: 10px;
-          margin-bottom: 15px;
+          color: #000;
+          margin-bottom: 20px;
           text-transform: uppercase;
+          letter-spacing: 1px;
         }
         .content-block {
-          background: ${templateConfig.colors.background};
-          padding: 15px;
-          border-radius: 8px;
-          margin-bottom: 15px;
-          border: 1px solid rgba(0,0,0,0.05);
+          margin-bottom: 25px;
+          position: relative;
         }
         .content-block h3 {
-          font-size: 16px;
-          color: ${templateConfig.colors.primary};
-          margin: 0 0 5px;
-          font-weight: 600;
+          font-size: 17px;
+          color: #000;
+          margin: 0;
+          font-weight: 500;
         }
         .subtitle {
-          font-size: 14px;
-          color: ${templateConfig.colors.accent};
-          font-weight: 500;
-          margin-bottom: 5px;
+          font-size: 15px;
+          color: #666;
+          font-weight: 400;
+          margin: 4px 0;
         }
         .date {
-          font-size: 12px;
-          color: ${templateConfig.colors.secondary};
+          font-size: 14px;
+          color: #888;
           margin-bottom: 10px;
         }
         .details-list {
-          padding-left: 20px;
-          margin: 5px 0 0;
+          padding-left: 0;
+          list-style: none;
+          margin: 10px 0 0;
         }
         .details-list li {
-          font-size: 13px;
-          margin-bottom: 5px;
+          font-size: 14px;
+          margin-bottom: 8px;
+          color: #444;
+          line-height: 1.6;
+          padding-left: 20px;
+          position: relative;
+        }
+        .details-list li::before {
+          content: "•";
+          position: absolute;
+          left: 0;
+          color: #888;
         }
         .skills-list {
           display: flex;
@@ -98,58 +99,45 @@ export const template3 = {
           list-style: none;
         }
         .skill-item {
-          background: white;
-          padding: 6px 12px;
-          border-radius: 15px;
-          font-size: 12px;
-          color: ${templateConfig.colors.primary};
-          box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+          font-size: 14px;
+          color: #444;
+          font-weight: 400;
+          border-bottom: 1px solid #ddd;
+          padding: 4px 0;
         }
         .summary-text {
           font-size: 14px;
-          line-height: 1.7;
-        }
-        .icon {
-          color: ${templateConfig.colors.accent};
-          margin-right: 5px;
-        }
-        .contact-item {
-          display: inline-flex;
-          align-items: center;
-          margin: 0 10px;
+          line-height: 1.6;
+          color: #444;
         }
         .project-title {
           display: flex;
           align-items: center;
-          gap: 5px;
-        }
-        a {
-          color: ${templateConfig.colors.accent};
-          text-decoration: none;
+          gap: 10px;
         }
         a:hover {
-          text-decoration: underline;
+          color: #000;
+          border-bottom: 1px solid #000;
+        }
+        @media print {
+          .resume-container {
+            margin: 0;
+            padding: 30px 40px;
+          }
         }
       </style>
 
       <div class="header">
-        <h1>${data.name || 'Your Name'}</h1>
-        <h2>${data.title || 'Your Title'}</h2>
-      </div>
-
-      <div class="contact-info">
-        <span class="contact-item">
-          <a href="mailto:${data.email}">${data.email}</a>
-        </span>
-        <span class="contact-item">
-          ${data.phone}
-        </span>
-        <span class="contact-item">
-          <a href="${data.linkedin}" target="_blank">LinkedIn</a>
-        </span>
-        <span class="contact-item">
-          <a href="${data.github}" target="_blank">GitHub</a>
-        </span>
+        <div class="header-left">
+          <h1>${data.name || 'Your Name'}</h1>
+          <h2>${data.title || 'Your Title'}</h2>
+        </div>
+        <div class="contact-info">
+          <a href="mailto:${data.email || ''}">${data.email || ''}</a>
+          <span>${data.phone || ''}</span>
+          <a href="${data.linkedin || '#'}" target="_blank">LinkedIn</a>
+          <a href="${data.github || '#'}" target="_blank">GitHub</a>
+        </div>
       </div>
 
       <div class="section">
@@ -172,7 +160,7 @@ export const template3 = {
       </div>
       <div class="section">
         <h2 class="section-title">Experience</h2>
-        ${(data.experience || []).map(exp => `
+        ${((data.experience || []).map(exp => `
           <div class="content-block">
             <h3>${exp.title || 'Job Title'}</h3>
             <div class="subtitle">${exp.company || 'Company Name'}</div>
@@ -181,37 +169,37 @@ export const template3 = {
               ${exp.isPresent ? 'Present' : formatMonthYear(exp.endDate) || 'End Date'}
             </div>
             <ul class="details-list">
-              ${(exp.details || []).map(detail => `
+              ${((exp.details || []).map(detail => `
                 <li>${typeof detail === 'string' ? detail : 'Detail'}</li>
-              `).join('')}
+              `).join('') || '')}
             </ul>
           </div>
-        `).join('')}
+        `).join('') || '')}
       </div>
       <div class="section">
         <h2 class="section-title">Skills</h2>
         <div class="content-block">
           <ul class="skills-list">
-            ${(data.skills || []).map(skill => `
+            ${((data.skills || []).map(skill => `
               <li class="skill-item">${typeof skill === 'string' ? skill : 'Skill'}</li>
-            `).join('')}
+            `).join('') || '')}
           </ul>
         </div>
       </div>
       <div class="section">
         <h2 class="section-title">Projects</h2>
-        ${(data.projects || []).map(project => `
+        ${((data.projects || []).map(project => `
           <div class="content-block">
             <div class="project-title">
-              <h3>${project.name}</h3>
+              <h3>${project.name || 'Project'}</h3>
             </div>
             <div class="date">
-              ${formatMonthYear(project.durationStart)} - ${formatMonthYear(project.durationEnd)}
+              ${formatMonthYear(project.durationStart) || ''} - ${formatMonthYear(project.durationEnd) || ''}
             </div>
-            <p class="summary-text">${project.details}</p>
+            <p class="summary-text">${project.details || ''}</p>
           </div>
-        `).join('')}
-        </div>
+        `).join('') || '')}
+      </div>
     </div>
   `
 }; 
