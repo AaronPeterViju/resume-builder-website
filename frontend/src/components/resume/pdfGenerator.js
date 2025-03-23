@@ -597,130 +597,12 @@ const getTemplate2Definition = (formData, formatMonthYear) => {
 };
 
 const getTemplate3Definition = (formData, formatMonthYear) => {
-  return {
-    pageSize: 'A4',
-    pageMargins: [40, 40, 40, 40],
-    content: [
+  // Helper function to create section title with line
+  const createSectionTitle = (title) => ({
+    stack: [
       {
-        stack: [
-          {
-            text: formData.name,
-            style: 'header',
-            alignment: 'center'
-          },
-          {
-            text: formData.title,
-            style: 'subheader',
-            alignment: 'center'
-          }
-        ],
-        margin: [0, 0, 0, 10]
-      },
-      {
-        text: [
-          { text: formData.email, link: `mailto:${formData.email}`, color: '#0066cc' },
-          ' | ',
-          formData.phone,
-          ' | ',
-          { text: 'LinkedIn', link: formData.linkedin, color: '#0066cc' },
-          ' | ',
-          { text: 'GitHub', link: formData.github, color: '#0066cc' }
-        ],
-        style: 'contact',
-        alignment: 'center',
-        margin: [0, 0, 0, 20]
-      },
-      {
-        canvas: [
-          {
-            type: 'line',
-            x1: 0,
-            y1: 5,
-            x2: 515,
-            y2: 5,
-            lineWidth: 1,
-            lineColor: '#3498db'
-          }
-        ],
-        margin: [0, 10, 0, 20]
-      },
-      {
-        stack: [
-          {
-            text: 'PROFESSIONAL SUMMARY',
-            style: 'sectionTitle'
-          },
-          {
-            text: formData.about,
-            style: 'normal',
-            margin: [0, 0, 0, 20]
-          },
-          {
-            text: 'EXPERIENCE',
-            style: 'sectionTitle'
-          },
-          ...formData.experience.map(exp => ({
-            stack: [
-              {
-                text: exp.title,
-                style: 'experienceTitle'
-              },
-              {
-                text: exp.company,
-                style: 'company'
-              },
-              {
-                text: `${formatMonthYear(exp.startDate)} - ${exp.isPresent ? 'Present' : formatMonthYear(exp.endDate)}`,
-                style: 'date'
-              },
-              {
-                ul: exp.details.map(detail => ({
-                  text: typeof detail === 'object' ? detail.text || '' : detail,
-                  style: 'normal'
-                }))
-              }
-            ],
-            margin: [0, 0, 0, 15]
-          })),
-          {
-            text: 'PROJECTS',
-            style: 'sectionTitle',
-            margin: [0, 20, 0, 10]
-          },
-          ...formData.projects.map(project => projectSection(project, formatMonthYear)),
-          {
-            text: 'SKILLS',
-            style: 'sectionTitle',
-            margin: [0, 20, 0, 10]
-          },
-          {
-            ul: formData.skills.map(skill => ({
-              text: typeof skill === 'object' ? skill.text || '' : skill,
-              style: 'skillItem'
-            }))
-          },
-          {
-            text: 'EDUCATION',
-            style: 'sectionTitle',
-            margin: [0, 20, 0, 10]
-          },
-          {
-            stack: [
-              {
-                text: formData.education.qualification,
-                style: 'educationTitle'
-              },
-              {
-                text: formData.education.institution,
-                style: 'institution'
-              },
-              {
-                text: `${formatMonthYear(formData.education.startDate)} - ${formData.education.isPresent ? 'Present' : formatMonthYear(formData.education.endDate)}`,
-                style: 'date'
-              }
-            ]
-          }
-        ]
+        text: title,
+        style: 'sectionTitle'
       },
       {
         canvas: [
@@ -730,69 +612,228 @@ const getTemplate3Definition = (formData, formatMonthYear) => {
             y1: 0,
             x2: 515,
             y2: 0,
-            lineWidth: 1,
-            lineColor: '#e0e0e0'
+            lineWidth: 0.7,  // Slightly thicker line
+            lineColor: '#3182ce'  // Changed to blue color to match preview
           }
         ],
-        margin: [0, 10, 0, 20]
+        margin: [0, 8, 0, 12]
       }
-    ],
+    ]
+  });
+
+  return {
+    pageSize: 'A4',
+    pageMargins: [50, 40, 50, 40],
+    defaultStyle: {
+      font: 'Roboto',
+      lineHeight: 1.4
+    },
     styles: {
-      header: {
-        fontSize: 24,
+      headerName: {
+        fontSize: 28,
         bold: true,
-        color: '#2c3e50'
+        color: '#1a202c',
+        margin: [0, 0, 0, 4],
+        font: 'Roboto'
       },
-      subheader: {
+      headerTitle: {
         fontSize: 16,
-        color: '#7f8c8d'
+        color: '#4a5568',
+        margin: [0, 0, 0, 15],
+        font: 'Roboto'
       },
-      contact: {
-        fontSize: 10,
-        color: '#666666'
+      contactInfo: {
+        fontSize: 11,
+        color: '#4a5568',
+        font: 'Roboto',
+        alignment: 'left'
       },
       sectionTitle: {
-        fontSize: 14,
+        fontSize: 13,
         bold: true,
-        color: '#2c3e50',
-        margin: [0, 20, 0, 10],
-        decoration: 'underline',
-        decorationStyle: 'solid',
-        decorationColor: '#3498db'
+        color: '#1a202c',
+        margin: [0, 0, 0, 0],  // Reduced bottom margin since we add it in the line
+        font: 'Roboto',
+        letterSpacing: 2
+      },
+      contentTitle: {
+        fontSize: 13,
+        bold: true,
+        color: '#2d3748',
+        margin: [0, 0, 0, 2],
+        font: 'Roboto'
+      },
+      subtitle: {
+        fontSize: 12,
+        color: '#4a5568',
+        margin: [0, 0, 0, 2],
+        font: 'Roboto'
+      },
+      dateText: {
+        fontSize: 11,
+        color: '#718096',
+        margin: [0, 0, 0, 8],
+        font: 'Roboto',
+        italics: true
+      },
+      normalText: {
+        fontSize: 11,
+        color: '#4a5568',
+        lineHeight: 1.5,
+        font: 'Roboto'
+      },
+      bulletPoint: {
+        fontSize: 11,
+        color: '#4a5568',
+        lineHeight: 1.5,
+        font: 'Roboto'
       },
       skillItem: {
-        fontSize: 10,
-        color: '#333333'
-      },
-      experienceTitle: {
-        fontSize: 12,
-        bold: true,
-        color: '#2c3e50'
-      },
-      company: {
         fontSize: 11,
-        color: '#3498db'
-      },
-      date: {
-        fontSize: 10,
-        italics: true,
-        color: '#7f8c8d'
-      },
-      normal: {
-        fontSize: 10,
-        color: '#333333',
-        lineHeight: 1.4
-      },
-      educationTitle: {
-        fontSize: 11,
-        bold: true,
-        color: '#2c3e50'
-      },
-      institution: {
-        fontSize: 10,
-        color: '#3498db'
+        color: '#4a5568',
+        font: 'Roboto',
+        margin: [0, 0, 15, 4]
       }
-    }
+    },
+    content: [
+      // Header section
+      {
+        stack: [
+          {
+            text: formData.name || 'Your Name',
+            style: 'headerName'
+          },
+          {
+            text: formData.title || 'Your Title',
+            style: 'headerTitle'
+          },
+          {
+            columns: [
+              {
+                text: [
+                  { text: formData.email || '', link: `mailto:${formData.email}`, color: '#3182ce' },
+                  '   •   ',
+                  formData.phone || '',
+                  '   •   ',
+                  { text: 'LinkedIn', link: formData.linkedin, color: '#3182ce' },
+                  '   •   ',
+                  { text: 'GitHub', link: formData.github, color: '#3182ce' }
+                ],
+                style: 'contactInfo'
+              }
+            ]
+          }
+        ],
+        margin: [0, 0, 0, 25]
+      },
+
+      // Professional Summary
+      {
+        stack: [
+          createSectionTitle('PROFESSIONAL SUMMARY'),
+          {
+            text: formData.about || '',
+            style: 'normalText'
+          }
+        ],
+        margin: [0, 0, 0, 20]
+      },
+
+      // Education
+      {
+        stack: [
+          createSectionTitle('EDUCATION'),
+          {
+            text: formData.education?.qualification || '',
+            style: 'contentTitle'
+          },
+          {
+            text: formData.education?.institution || '',
+            style: 'subtitle'
+          },
+          {
+            text: `${formatMonthYear(formData.education?.startDate)} - ${formData.education?.isPresent ? 'Present' : formatMonthYear(formData.education?.endDate)}`,
+            style: 'dateText'
+          }
+        ],
+        margin: [0, 0, 0, 20]
+      },
+
+      // Experience
+      {
+        stack: [
+          createSectionTitle('EXPERIENCE'),
+          ...(formData.experience || []).map(exp => ({
+            stack: [
+              {
+                text: exp.title || '',
+                style: 'contentTitle'
+              },
+              {
+                text: exp.company || '',
+                style: 'subtitle'
+              },
+              {
+                text: `${formatMonthYear(exp.startDate)} - ${exp.isPresent ? 'Present' : formatMonthYear(exp.endDate)}`,
+                style: 'dateText'
+              },
+              {
+                ul: exp.details.map(detail => ({
+                  text: detail,
+                  style: 'bulletPoint',
+                  margin: [0, 0, 0, 4]
+                }))
+              }
+            ],
+            margin: [0, 0, 0, 15]
+          }))
+        ],
+        margin: [0, 0, 0, 20]
+      },
+
+      // Skills
+      {
+        stack: [
+          createSectionTitle('SKILLS'),
+          {
+            columns: [
+              {
+                width: 'auto',
+                stack: (formData.skills || []).map(skill => ({
+                  text: `• ${skill}`,
+                  style: 'skillItem'
+                }))
+              }
+            ]
+          }
+        ],
+        margin: [0, 0, 0, 20]
+      },
+
+      // Projects
+      {
+        stack: [
+          createSectionTitle('PROJECTS'),
+          ...(formData.projects || []).map(project => ({
+            stack: [
+              {
+                text: project.name || '',
+                style: 'contentTitle'
+              },
+              {
+                text: `${formatMonthYear(project.durationStart)} - ${formatMonthYear(project.durationEnd)}`,
+                style: 'dateText'
+              },
+              {
+                text: project.details || '',
+                style: 'normalText'
+              }
+            ],
+            margin: [0, 0, 0, 15]
+          }))
+        ]
+      }
+    ]
   };
 };
 
