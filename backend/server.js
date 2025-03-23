@@ -2,10 +2,10 @@ const express = require('express');
 const mongoose = require('mongoose');
 const bodyParser = require('body-parser');
 const cors = require('cors');
+const User = require('./models/User'); // Import User model
 const authRoutes = require('./routes/auth');
 const resumeRoutes = require('./routes/resume');
 const atsRoutes = require('./routes/ats');
-const userRoutes = require('./routes/userRoutes'); ; // Added this for Admin Management
 
 const app = express();
 const PORT = process.env.PORT || 5000;
@@ -16,7 +16,6 @@ app.use(cors());
 app.use('/api/auth', authRoutes);
 app.use('/api/resume', resumeRoutes);
 app.use('/api/ats', atsRoutes);
-app.use('/api/users', userRoutes); // Admin Management Route Added
 
 app.get('/', (req, res) => {
     res.send('Welcome to the Resume Builder API');
@@ -25,8 +24,30 @@ app.get('/', (req, res) => {
 const mongoURI = 'mongodb://127.0.0.1:27017/resume-builder';
 
 mongoose.connect(mongoURI)
-  .then(() => {
+  .then(async () => {
     console.log('Connected to MongoDB');
+
+    // Admin Credentials (Stored as plain text)
+    const adminUsername = 'admin';
+    const adminEmail = 'admin@gmail.com';
+    const adminPassword = 'admin@123';
+
+    // Check if an admin already exists
+    const existingAdmin = await User.findOne({ role: 'admin' });
+
+    if (!existingAdmin) {
+        const newAdmin = new User({
+            username: adminUsername,
+            email: adminEmail,
+            password: adminPassword, //  stored as plain text
+            role: 'admin'
+        });
+
+        await newAdmin.save();
+        //console.log('Default admin created.');
+    } else {
+        //console.log('Admin already exists.');
+    }
   })
   .catch((error) => {
     console.error('Error connecting to MongoDB:', error.message);
