@@ -5,7 +5,7 @@ const User = require('../models/User');
 // Register a new user
 router.post('/signup', async (req, res) => {
     try {
-        const { username, email, password, role } = req.body;
+        const { username, email, password } = req.body;
 
         // Check if the user already exists
         const existingUser = await User.findOne({ username });
@@ -14,7 +14,7 @@ router.post('/signup', async (req, res) => {
         }
 
         // Create and save the new user
-        const user = new User({ username, email, password, role: userRole });
+        const user = new User({ username, email, password, role: 'user' }); // Default role is 'user'
         await user.save();
 
         res.status(201).json({ message: "User registered successfully" });
@@ -32,7 +32,12 @@ router.post('/login', async (req, res) => {
         // Find user by username
         const user = await User.findOne({ username });
 
-        if (!user || user.password !== password) {
+        if (!user) {
+            return res.status(400).json({ error: 'Invalid username or password' });
+        }
+
+        // Check if the password matches
+        if (user.password !== password) {
             return res.status(400).json({ error: 'Invalid username or password' });
         }
 
