@@ -4,7 +4,7 @@ import axios from 'axios';
 import '../styles.css';
 
 function Login() {
-  const [username, setUsername] = useState('');
+  const [usernameOrEmail, setUsernameOrEmail] = useState('');
   const [password, setPassword] = useState('');
   const [errorMessage, setErrorMessage] = useState('');
   const [showForgotPassword, setShowForgotPassword] = useState(false);
@@ -19,10 +19,10 @@ function Login() {
   const handleSubmit = async (event) => {
     event.preventDefault();
     try {
-      const response = await axios.post('http://localhost:5000/api/auth/login', { username, password });
+      const response = await axios.post('http://localhost:5000/api/auth/login', { usernameOrEmail, password });
 
       if (response.status === 200) {
-        const { role, userId } = response.data;
+        const { role, userId, username } = response.data;
   
         // Store authentication data
         localStorage.setItem('authenticated', 'true');
@@ -37,7 +37,7 @@ function Login() {
           navigate('/index');
         }
       } else {
-        setErrorMessage('Invalid username or password');
+        setErrorMessage('Invalid login credentials');
       }
     } catch (error) {
       setErrorMessage('Error: Incorrect credentials');
@@ -150,12 +150,12 @@ function Login() {
               
               <form onSubmit={handleSubmit}>
                 <div className="form-group mb-4">
-                  <label className="form-label">Username</label>
+                  <label className="form-label">Username or Email</label>
                   <input
                     type="text"
                     className="form-input"
-                    value={username}
-                    onChange={(e) => handleInputChange(setUsername, e.target.value)}
+                    value={usernameOrEmail}
+                    onChange={(e) => handleInputChange(setUsernameOrEmail, e.target.value)}
                     required
                   />
                 </div>
