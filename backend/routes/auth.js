@@ -34,23 +34,29 @@ router.post('/signup', async (req, res) => {
 // Login a user
 router.post('/login', async (req, res) => {
     try {
-        const { username, password } = req.body;
+        const { usernameOrEmail, password } = req.body;
 
-        // Find user by username
-        const user = await User.findOne({ username });
+        // Find user by username or email
+        const user = await User.findOne({
+            $or: [
+                { username: usernameOrEmail },
+                { email: usernameOrEmail }
+            ]
+        });
 
         if (!user) {
-            return res.status(400).json({ error: 'Invalid username or password' });
+            return res.status(400).json({ error: 'Invalid credentials' });
         }
 
         // Check if the password matches
         if (user.password !== password) {
-            return res.status(400).json({ error: 'Invalid username or password' });
+            return res.status(400).json({ error: 'Invalid credentials' });
         }
 
         res.status(200).json({
             message: 'Login successful',
             userId: user._id,
+            username: user.username,
             role: user.role // Send the role in response
         });
 
