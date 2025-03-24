@@ -5,7 +5,7 @@ const AdminDashboard = () => {
   const navigate = useNavigate();
 
   const User_Dashboard = () => {
-    navigate('/index');
+    navigate('/Aindex');
   };
 
   const AtsScoreControl = () => {
@@ -43,7 +43,7 @@ const AdminDashboard = () => {
           }}>Admin Dashboard</h1>
         </div>
         <button 
-          onClick={User_Dashboard} 
+          onClick={() => navigate('/Aindex')} 
           style={{
             padding: "10px 16px",
             border: "none",
