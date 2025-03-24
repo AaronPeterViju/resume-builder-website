@@ -219,7 +219,7 @@ const renderScoreGauge = () => {
         <div className="container header-content">
           <div className="logo-container fade-in">
             <img src="/logo512.png" alt="Career Catalyst Logo" className="logo-image" />
-            <h1 onClick={() => navigate('/index')} className="logo-text" style={{ cursor: 'pointer' }}>Career Catalyst</h1>
+            <h1 onClick={() => navigate('/Aindex')} className="logo-text" style={{ cursor: 'pointer' }}>Career Catalyst</h1>
           </div>
           <nav className="fade-in">
             <button onClick={() => navigate('/AATSChecker')} className="button secondary-button">ATS Checker</button>
