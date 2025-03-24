@@ -7,6 +7,9 @@ import ATSChecker from './components/ATSChecker';
 import ResumeBuilder from './components/ResumeBuilder';
 import Admindash from './components/Admindash'; //admindash
 import AtsScoreControl from './components/AtsScoreControl'; //AtsScoreControl
+import Aindex from './components/Aindex'; //Aindex
+import AresumeBuilder from './components/AresumeBuilder'; //AresumeBuilder
+import AATSChecker from './components/AATSChecker'; //AATSChecker
 import Index from './components/Index'; // Ensure this matches the file name
 import './styles.css';
 import './style.css';
@@ -23,6 +26,9 @@ function App() {
           <Route path="/index" element={<Index />} /> {/* Add this line */}
          <Route path="/admin-dashboard" element={<Admindash />} /> 
           <Route path="/AtsScoreControl" element={<AtsScoreControl />} />
+          <Route path="/Aindex" element={<Aindex />} /> {/* Add this line */}
+          <Route path="/AresumeBuilder" element={<AresumeBuilder />} /> {/* Add this line */}
+          <Route path="/AATSChecker" element={<AATSChecker />} /> {/* Add this line */}
         </Routes>
       </div>
     </Router>
