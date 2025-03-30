@@ -219,7 +219,10 @@ function Signup() {
               />
             </div>
             <button type="submit" className="button w-full mb-6">Sign Up</button>
-            
+
+            {/* Add explicit spacing after the Sign Up button */}
+            <div style={{ marginBottom: '10px' }}></div>
+
             <div className="text-center">
               <span>
                 Already have an account? <Link to="/login" className="auth-link">Login</Link>
