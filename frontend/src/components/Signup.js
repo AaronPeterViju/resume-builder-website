@@ -179,18 +179,22 @@ function Signup() {
                 <button
                   type="button"
                   onClick={generatePassword}
-                  style={generateButtonStyle}
-                  onMouseEnter={() => setGenerateHover(true)}
-                  onMouseLeave={() => setGenerateHover(false)}
+                  className="button"
+                  style={{ 
+                    padding: '0.75rem 0.8rem',
+                    borderRadius: '8px' // More rounded edges
+                  }}
                 >
                   Generate
                 </button>
                 <button
                   type="button"
                   onClick={() => setShowPassword(!showPassword)}
-                  style={toggleButtonStyle}
-                  onMouseEnter={() => setShowHover(true)}
-                  onMouseLeave={() => setShowHover(false)}
+                  className="button"
+                  style={{ 
+                    padding: '0.75rem 0.8rem',
+                    borderRadius: '8px' // More rounded edges
+                  }}
                 >
                   {showPassword ? 'Hide' : 'Show'}
                 </button>
