@@ -222,7 +222,7 @@ function Signup() {
             
             <div className="text-center">
               <span>
-                Already have an account? <Link to="/login" className="text-blue-600 hover:text-blue-800 transition-colors font-medium px-4 py-2">Login</Link>
+                Already have an account? <Link to="/login" className="auth-link">Login</Link>
               </span>
             </div>
           </form>
