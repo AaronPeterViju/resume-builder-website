@@ -99,7 +99,7 @@ function Signup() {
   const generateButtonStyle = {
     background: generateHover ? '#0a5cb8' : 'var(--primary-color)',
     color: 'white',
-    padding: '0.75rem 1.5rem',
+    padding: '0.75rem 0.8rem', // Reduced from 1.5rem to 0.8rem
     borderRadius: 'var(--border-radius)',
     border: 'none',
     fontWeight: '500',
@@ -112,7 +112,7 @@ function Signup() {
   const toggleButtonStyle = {
     background: showHover ? '#0a5cb8' : 'var(--primary-color)',
     color: 'white',
-    padding: '0.75rem 1.5rem',
+    padding: '0.75rem 0.8rem', 
     borderRadius: 'var(--border-radius)',
     border: 'none',
     fontWeight: '500',
