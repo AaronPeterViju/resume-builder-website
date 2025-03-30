@@ -157,6 +157,7 @@ function Login() {
                     value={usernameOrEmail}
                     onChange={(e) => handleInputChange(setUsernameOrEmail, e.target.value)}
                     required
+                    placeholder="Enter your username or email"
                   />
                 </div>
                 <div className="form-group mb-5">
@@ -167,25 +168,29 @@ function Login() {
                     value={password}
                     onChange={(e) => handleInputChange(setPassword, e.target.value)}
                     required
+                    placeholder="Enter your password"
                   />
                 </div>
                 <button type="submit" className="button w-full mb-6">Login</button>
-                
-                <div className="flex items-center justify-center space-x-4 px-2">
+
+                {/* Add explicit spacing after the Login button */}
+                <div style={{ marginBottom: '10px' }}></div>
+
+                <div className="text-center mb-4">
                   <Link 
                     to="#" 
                     onClick={(e) => {
                       e.preventDefault();
                       toggleForgotPassword();
                     }}
-                    className="text-blue-600 hover:text-blue-800 transition-colors text-sm font-medium px-3 py-2"
+                    className="auth-link"
                   >
                     Forgot Password?
                   </Link>
-                  <div className="h-5 border-r border-gray-300"></div>
-                  <Link to="/signup" className="text-blue-600 hover:text-blue-800 transition-colors text-sm font-medium px-3 py-2">
-                    Sign up
-                  </Link>
+                </div>
+
+                <div className="text-center">
+                  Don't have an account? <Link to="/signup" className="auth-link">Sign up</Link>
                 </div>
               </form>
             </>
@@ -208,7 +213,7 @@ function Login() {
                     className="form-input w-full"
                     value={forgotUsername}
                     onChange={(e) => setForgotUsername(e.target.value)}
-                    onKeyPress={handleUsernameKeyPress}
+                    onKeyPress={handleUsernameKeyPress} // Handles "Enter" key press
                     placeholder="Enter your username and press Enter"
                     required
                   />
@@ -218,12 +223,30 @@ function Login() {
                     </div>
                   )}
                 </div>
-                
+
+                {!securityQuestion && (
+                  <div className="text-center mb-5">
+                    <button
+                      type="button"
+                      className="button w-full"
+                      onClick={getSecurityQuestion} // Calls the same function as pressing Enter
+                    >
+                      Continue
+                    </button>
+                  </div>
+                )}
+
+                {/* Add explicit spacing after the Login button */}
+                <div style={{ marginBottom: '10px' }}></div>
+
                 {securityQuestion && (
                   <>
                     <div className="form-group mb-4">
                       <label className="form-label">Security Question</label>
-                      <div className="form-input bg-gray-100 text-gray-700" style={{ cursor: 'not-allowed' }}>
+                      <div
+                        className="form-input bg-gray-100 text-gray-700"
+                        style={{ cursor: 'not-allowed' }}
+                      >
                         {securityQuestion}
                       </div>
                     </div>
@@ -249,20 +272,23 @@ function Login() {
                         required
                       />
                     </div>
-                    <button type="submit" className="button w-full mb-6">Reset Password</button>
+                    <button type="submit" className="button w-full mb-6">
+                      Reset Password
+                    </button>
                   </>
                 )}
-                
+
                 <div className="text-center">
+                  Back to{' '}
                   <Link
                     to="#"
                     onClick={(e) => {
                       e.preventDefault();
                       toggleForgotPassword();
                     }}
-                    className="text-blue-600 hover:text-blue-800 transition-colors font-medium px-4 py-2"
+                    className="auth-link"
                   >
-                    Back to Login
+                    Login
                   </Link>
                 </div>
               </form>
