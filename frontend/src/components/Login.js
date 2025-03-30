@@ -8,7 +8,7 @@ function Login() {
   const [password, setPassword] = useState('');
   const [errorMessage, setErrorMessage] = useState('');
   const [showForgotPassword, setShowForgotPassword] = useState(false);
-  const [forgotUsername, setForgotUsername] = useState('');
+  const [forgotIdentifier, setForgotIdentifier] = useState(''); // Rename from forgotUsername
   const [securityQuestion, setSecurityQuestion] = useState('');
   const [securityAnswer, setSecurityAnswer] = useState('');
   const [newPassword, setNewPassword] = useState('');
@@ -52,8 +52,8 @@ function Login() {
 
   // Get security question for a user
   const getSecurityQuestion = async () => {
-    if (!forgotUsername) {
-      setResetMessage({ text: 'Please enter a username', isError: true });
+    if (!forgotIdentifier) {
+      setResetMessage({ text: 'Please enter a username or email', isError: true });
       return;
     }
 
@@ -61,12 +61,29 @@ function Login() {
     setResetMessage({ text: '', isError: false });
 
     try {
-      const response = await axios.get(`http://localhost:5000/api/auth/security-question/${forgotUsername}`);
-      if (response.status === 200) {
+      // Trim whitespace from identifier to avoid format issues
+      const trimmedIdentifier = forgotIdentifier.trim();
+      
+      // Make API call with proper error handling
+      const response = await axios.post('http://localhost:5000/api/auth/security-question', {
+        identifier: trimmedIdentifier
+      });
+      
+      if (response.data && response.data.securityQuestion) {
         setSecurityQuestion(response.data.securityQuestion);
+      } else {
+        setResetMessage({ text: 'Could not retrieve security question', isError: true });
       }
     } catch (error) {
-      setResetMessage({ text: 'User not found', isError: true });
+      console.error('Security question error:', error);
+      if (error.response && error.response.status === 404) {
+        setResetMessage({ text: 'No account found with this username or email', isError: true });
+      } else {
+        setResetMessage({ 
+          text: error.response?.data?.error || 'Error retrieving security question', 
+          isError: true 
+        });
+      }
     } finally {
       setIsLoading(false);
     }
@@ -102,7 +119,7 @@ function Login() {
 
     try {
       const response = await axios.post('http://localhost:5000/api/auth/reset-password', {
-        username: forgotUsername,
+        identifier: forgotIdentifier, // Change from username to identifier
         securityAnswer,
         newPassword
       });
@@ -112,7 +129,7 @@ function Login() {
         // Reset form and toggle back to login after 3 seconds
         setTimeout(() => {
           setShowForgotPassword(false);
-          setForgotUsername('');
+          setForgotIdentifier(''); // Update variable name
           setSecurityQuestion('');
           setSecurityAnswer('');
           setNewPassword('');
@@ -129,7 +146,7 @@ function Login() {
     setResetMessage({ text: '', isError: false });
     // Reset form fields
     if (showForgotPassword) {
-      setForgotUsername('');
+      setForgotIdentifier(''); // Update variable name
       setSecurityQuestion('');
       setSecurityAnswer('');
       setNewPassword('');
@@ -207,14 +224,14 @@ function Login() {
               
               <form onSubmit={resetPassword}>
                 <div className="form-group mb-4">
-                  <label className="form-label">Username</label>
+                  <label className="form-label">Username or Email</label>
                   <input
                     type="text"
                     className="form-input w-full"
-                    value={forgotUsername}
-                    onChange={(e) => setForgotUsername(e.target.value)}
-                    onKeyPress={handleUsernameKeyPress} // Handles "Enter" key press
-                    placeholder="Enter your username and press Enter"
+                    value={forgotIdentifier}
+                    onChange={(e) => setForgotIdentifier(e.target.value)}
+                    onKeyPress={handleUsernameKeyPress}
+                    placeholder="Enter your username or email"
                     required
                   />
                   {isLoading && (
@@ -275,6 +292,9 @@ function Login() {
                     <button type="submit" className="button w-full mb-6">
                       Reset Password
                     </button>
+
+                    {/* Add explicit spacing after the Reset Password button */}
+                    <div style={{ marginBottom: '10px' }}></div>
                   </>
                 )}
 

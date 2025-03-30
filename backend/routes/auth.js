@@ -90,17 +90,26 @@ router.get('/security-question/:username', async (req, res) => {
 // Reset password with security answer
 router.post('/reset-password', async (req, res) => {
     try {
-        const { username, securityAnswer, newPassword } = req.body;
+        const { identifier, securityAnswer, newPassword } = req.body;
         
-        // Find user by username
-        const user = await User.findOne({ username });
+        if (!identifier || !securityAnswer || !newPassword) {
+            return res.status(400).json({ error: 'All fields are required' });
+        }
+        
+        // Find user by either username or email
+        const user = await User.findOne({
+            $or: [
+                { username: identifier },
+                { email: identifier.toLowerCase() } // Case-insensitive email comparison
+            ]
+        });
         
         if (!user) {
             return res.status(404).json({ error: 'User not found' });
         }
         
-        // Check if security answer matches
-        if (user.securityAnswer !== securityAnswer) {
+        // Check if security answer matches (case-insensitive)
+        if (user.securityAnswer.toLowerCase() !== securityAnswer.toLowerCase()) {
             return res.status(400).json({ error: 'Incorrect security answer' });
         }
         
@@ -111,7 +120,31 @@ router.post('/reset-password', async (req, res) => {
         res.status(200).json({ message: 'Password reset successful' });
         
     } catch (error) {
+        console.error('Password reset error:', error);
         res.status(500).json({ error: "Server error: " + error.message });
+    }
+});
+
+// Get security question by identifier
+router.post('/security-question', async (req, res) => {
+    try {
+        const { identifier } = req.body;
+        
+        // Find user by either username or email
+        const user = await User.findOne({
+            $or: [
+                { username: identifier },
+                { email: identifier.toLowerCase() } // Convert email to lowercase for case-insensitive comparison
+            ]
+        });
+        
+        if (!user) {
+            return res.status(404).json({ error: 'User not found' });
+        }
+        
+        res.status(200).json({ securityQuestion: user.securityQuestion });
+    } catch (error) {
+        res.status(500).json({ error: 'Server error' });
     }
 });
 
