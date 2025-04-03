@@ -29,8 +29,8 @@ mongoose.connect(mongoURI)
 
     // Admin Credentials (Stored as plain text)
     const adminUsername = 'admin';
-    const adminEmail = 'admin@gmail.com';
-    const adminPassword = 'admin@123';
+    const adminEmail = 'admin@example.com';
+    const adminPassword = 'admin';
 
     // Check if an admin already exists
     const existingAdmin = await User.findOne({ role: 'admin' });
