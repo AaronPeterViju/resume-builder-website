@@ -281,6 +281,22 @@ function ResumeBuilder() {
                               onChange={handleChange}
                               required
                             />
+                          ) : name === 'phone' ? (
+                            <input
+                              type="tel"
+                              id={name}
+                              name={name}
+                              className="form-input enhanced-input"
+                              value={formData[name]}
+                              onChange={(e) => {
+                                // Only allow digits
+                                const value = e.target.value.replace(/\D/g, '');
+                                setFormData({ ...formData, [name]: value });
+                              }}
+                              pattern="[0-9]*"
+                              inputMode="numeric"
+                              required
+                            />
                           ) : (
                             <input
                               type={type}
